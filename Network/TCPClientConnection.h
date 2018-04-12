@@ -15,6 +15,7 @@ public:
     void Update() final;
 private:
     void _shutDownSocket();
+    void _onServerDisconnect();
     std::string m_address;
     uint16_t m_port;
     int32_t m_fd = -1;

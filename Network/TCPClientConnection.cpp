@@ -18,12 +18,7 @@ TCPClientConnection::TCPClientConnection( const std::string& address,
 
 TCPClientConnection::~TCPClientConnection()
 {
-    _shutDownSocket();
-    //
-    if(m_ctx.onDisconnect != nullptr)
-    {
-        m_ctx.onDisconnect(0);
-    }
+    _onServerDisconnect();
 }
 
 bool TCPClientConnection::Run()
@@ -56,6 +51,11 @@ bool TCPClientConnection::Run()
             continue;
         }
         break;
+    }
+
+    if(m_fd < 0)
+    {
+        return false;
     }
 
     fcntl(m_fd, F_SETFL, O_NONBLOCK);
@@ -114,6 +114,10 @@ void TCPClientConnection::Update()
             m_rawMsg.resize(m_msgSize);
             m_pendingMessage = true;
         }
+        else if(receivedItems == 0)
+        {
+            _onServerDisconnect();
+        }
     }
     else
     {
@@ -140,13 +144,28 @@ void TCPClientConnection::Update()
             }
             m_pendingMessage = false;
         }
+        else if(receivedItems == 0)
+        {
+            _onServerDisconnect();
+        }
     }
 }
 
 void TCPClientConnection::_shutDownSocket()
 {
-    if(m_fd < 0)
+    if(m_fd > 0)
     {
         close(m_fd);
+        m_fd = -1;
+    }
+}
+
+void TCPClientConnection::_onServerDisconnect()
+{
+    _shutDownSocket();
+    //
+    if(m_ctx.onDisconnect != nullptr)
+    {
+        m_ctx.onDisconnect(0);
     }
 }

@@ -6,7 +6,7 @@ int main()
 {
 
     View view;
-    if(view.Init({}) == true)
+    if(view.Init({}) == false)
     {
         return 1;
     }

@@ -5,7 +5,7 @@
 int main()
 {
     GameServer gamerServer;
-    if(gamerServer.Init({}) == true)
+    if(gamerServer.Init({}) == false)
     {
         return 1;
     }

@@ -6,7 +6,7 @@ int main()
 {
 
     GameController gameController;
-    if(gameController.Init({}) == true)
+    if(gameController.Init({}) == false)
     {
         return 1;
     }

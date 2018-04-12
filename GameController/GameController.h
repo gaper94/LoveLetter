@@ -3,6 +3,7 @@
 
 #include "../App/Application.h"
 #include "../Network/IConnection.h"
+#include <chrono>
 
 class GameController : public Application
 {
@@ -28,6 +29,8 @@ private:
     IConnection::ConnectionId m_viewConnectionId = IConnection::InvalidConnectionId;
     IConnection::Ptr m_serverConnection = nullptr;
     IConnection::ConnectionId m_serverConnectionId = IConnection::InvalidConnectionId;
+
+    std::chrono::steady_clock::time_point m_lastSend;
 };
 
 #endif // GAME_CONTROLLER_H

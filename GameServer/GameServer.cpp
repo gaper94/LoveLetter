@@ -3,6 +3,7 @@
 #include "../Network/NetworkDefines.h"
 #include <algorithm>
 #include <cstdlib>
+#include <iostream>
 
 bool GameServer::Init(const Arguments& args)
 {
@@ -33,11 +34,13 @@ bool GameServer::Init(const Arguments& args)
 
         ctx.onConnect = [this](IConnection::ConnectionId id)
         {
+            std::cout << "Connection " << id << std::endl;
             _onGameControllerConnect(id);
         };
 
         ctx.onDisconnect = [this](IConnection::ConnectionId id)
         {
+            std::cout << "Disconnect " << id << std::endl;
             _onGameControllerDisconnect(id);
         };
 
@@ -82,6 +85,12 @@ void GameServer::_onGameControllerDisconnect(IConnection::ConnectionId id)
 void GameServer::_onGameControllerMsgReceived(IConnection::ConnectionId id,
                                               const IConnection::Msg& msg)
 {
+    std::cout << "Received msg " << msg.name << ", ID = " << id << std::endl;
+    IConnection::Msg response;
+    response.name = "resp";
+    int con_id = id;
+    response.AddValue("con_id", con_id);
+    _sendMsgToGameController(id, response);
 }
 
 void GameServer::_sendMsgToGameController(IConnection::ConnectionId id,
