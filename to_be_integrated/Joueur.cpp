@@ -7,6 +7,10 @@ Joueur::Joueur(const std::string& _name)
 {
 }
 
+Joueur::~Joueur()
+{
+}
+
 const std::string& Joueur::GetName() const
 {
 	return name;
@@ -20,7 +24,7 @@ void Joueur::PrintHand()
     }
 }
 
-int Joueur::GetNbPoints() const
+int Joueur::GetNumberOfPoints() const
 {
     return nbPoints;
 }

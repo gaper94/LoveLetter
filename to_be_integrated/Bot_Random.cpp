@@ -4,17 +4,17 @@
 #include <iostream>
 #include "../GameCommon/GameUtils.h"
 
-Bot_Random::Bot_Random(const std::string& name)
+BotRandom::BotRandom(const std::string& name)
     : Joueur(name)
 {
 }
 
-void Bot_Random::DevinerRandom(Card c)
+void BotRandom::DevinerRandom(Card c)
 {
     std::cout << "Vous avez la carte:" << Utils::CardTypeToString(c.type) << "?" << std::endl;
 }
 
-Card Bot_Random::RandomCarte()
+Card BotRandom::RandomCarte()
 {
 	Card c1 = playerDeck[0];
 	Card c2 = playerDeck[1];
@@ -28,7 +28,7 @@ Card Bot_Random::RandomCarte()
     else return c2;
 }
 
-Card Bot_Random::ChoisirCarte()
+Card BotRandom::ChoisirCarte()
 {
 	Card carte1 = playerDeck[0];
 	Card carte2 = playerDeck[1];
@@ -44,7 +44,7 @@ Card Bot_Random::ChoisirCarte()
 	return RandomCarte();
 }
 
-Card Bot_Random::DevinerCarte()
+Card BotRandom::DevinerCarte()
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -56,7 +56,7 @@ Card Bot_Random::DevinerCarte()
     return c;
 }
 
-std::string Bot_Random::ChoisirJoueur(std::vector <Joueur*> vectorPlayers , int nbPlayers)
+std::string BotRandom::ChoisirJoueur(std::vector <Joueur*> vectorPlayers , int nbPlayers)
 {
     std::random_device rd;
     std::mt19937 gen(rd());

@@ -5,10 +5,10 @@
 #include <vector>
 #include "Joueur.h"
 
-class Bot_Random: public Joueur
+class BotRandom: public Joueur
 {
  public:
-    Bot_Random(const std::string& name);
+    BotRandom(const std::string& name);
     Card ChoisirCarte();
     Card RandomCarte();
     Card DevinerCarte();

@@ -74,29 +74,35 @@ void GameServer::Update()
 
 void GameServer::_onGameControllerConnect(IConnection::ConnectionId id)
 {
-    m_gameControllerConnectionId = id;
+    m_activeConnections.push_back(id);
 }
 
 void GameServer::_onGameControllerDisconnect(IConnection::ConnectionId id)
 {
-    m_gameControllerConnectionId = IConnection::InvalidConnectionId;
+    auto toRemove = std::remove(m_activeConnections.begin(), m_activeConnections.end(), id);
+    m_activeConnections.erase(toRemove, m_activeConnections.end());
 }
 
 void GameServer::_onGameControllerMsgReceived(IConnection::ConnectionId id,
                                               const IConnection::Msg& msg)
 {
-    std::cout << "Received msg " << msg.name << ", ID = " << id << std::endl;
-    IConnection::Msg response;
-    response.name = "resp";
-    int con_id = id;
-    response.AddValue("con_id", con_id);
-    _sendMsgToGameController(id, response);
+    if(msg.name == "players_config")
+    {
+        m_serverGame.InitPlayers(msg);
+    }
+    else if(msg.name == "start_game")
+    {
+        if(m_serverGame.CanStartGame() == true)
+        {
+            m_serverGame.StartGame();
+        }
+    }
 }
 
 void GameServer::_sendMsgToGameController(IConnection::ConnectionId id,
                                           const IConnection::Msg& msg)
 {
-    if(m_gameControllerConnectionId != IConnection::InvalidConnectionId)
+    if(m_gameControllerConnection != nullptr)
     {
         m_gameControllerConnection->SendMsg(id, msg);
     }

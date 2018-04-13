@@ -3,6 +3,8 @@
 
 #include "../App/Application.h"
 #include "../Network/IConnection.h"
+#include <vector>
+#include "Game.h"
 
 class GameServer : public Application
 {
@@ -20,10 +22,9 @@ private:
     void _sendMsgToGameController(IConnection::ConnectionId id,
                                   const IConnection::Msg& msg);
 
-    // Scale it to support multiple connections ?
     IConnection::Ptr m_gameControllerConnection = nullptr;
-    IConnection::ConnectionId m_gameControllerConnectionId = IConnection::InvalidConnectionId;
-
+    std::vector<IConnection::ConnectionId> m_activeConnections;
+    ServerGame m_serverGame;
 };
 
 #endif // GAME_SERVER_H

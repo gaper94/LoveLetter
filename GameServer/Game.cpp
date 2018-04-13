@@ -1,9 +1,12 @@
 #include "Game.h"
-#include "Bot_Random.h"
+#include "../to_be_integrated/Bot_Random.h"
 #include <iostream>
 #include "../GameCommon/GameUtils.h"
+#include "ServerDebug.h"
+#include <memory>
+#include <algorithm>
 
-bool Game::AllProtected(Joueur * moi)
+bool ServerGame::AllProtected(Joueur * moi)
 {
 	for(auto j : vectorPlayers)
     {
@@ -22,64 +25,44 @@ bool Game::AllProtected(Joueur * moi)
     return true;  
 }
 
-void Game::InitPlayers(int nbPlayers)
+void ServerGame::InitPlayers(const Msg& msg)
 {
-    std::string in;
-    std::string player;
-    while(nbPlayers < 2 || nbPlayers > 4)
+    if(msg.name != "players_config")
     {
-        std::cout << "Choose un number between 2 and 4 : " << std::endl;
-        getline(std::cin, in); 
-        nbPlayers = std::stoi(in);
+        return;
     }
-    std::string input = "";
-    vectorPlayers.clear();
-    int num = 1;
-    for(int i = 0 ; i < nbPlayers; i++)
+
+    m_numberOfPlayers = 0;
+    msg.GetValue("number_of_players", m_numberOfPlayers);
+    if(m_numberOfPlayers < 2)
     {
-        std::cout <<"What kind of player ? h for Human, t for terminator, r for random bot or i for inf_sup bot " << std::endl;
-        getline(std::cin, player);
-        if (player == "h")
-        {
-            printf("Enter your name: "); //change here according to different input modes
-            getline(std::cin, input);    //====
-            Joueur* joueur = new Joueur(input);
-            vectorPlayers.insert(vectorPlayers.begin(), 1, joueur); //array players with names from ->//input method
-            std::vector<Card> c;
-            PlayedCards p = {joueur, c};
-            playedCard.insert(playedCard.begin(),1,p);
-        }
-        if (player == "t")
-        {
-            //vectorPlayers.insert(vectorPlayers.begin(), 1, Terminator("Anne")); NOT IMPLEMENTED YET
-        }
-        if (player == "r")
-        {
-            std::string n;
-            if(num == 1)
-                n = "BotAnne";
-            if(num == 2)
-                n = "BotGeorges";
-            if(num == 3)
-                n = "BotMaria";
-            if(num == 4)
-                n = "BotAmadou";
-            Bot_Random* Bot = new Bot_Random(n);
-            vectorPlayers.insert(vectorPlayers.begin(), 1,Bot);
-            std::vector<Card> c;
-            PlayedCards p = {Bot, c};
-            playedCard.insert(playedCard.begin(),1,p);
-            num++;
-        }
-        if (player == "i")
-        {
-           // vectorPlayers.insert(vectorPlayers.begin(), 1, InfSup_Bot("Georges")); NOT IMPLEMENTED YET
-        }
+        LOG("Invalid number of players");
+        return;
     }
-    numbreOfPlayers = nbPlayers;
+    //
+    std::string playerName;
+    if(msg.GetValue("player_name", playerName) == false)
+    {
+        LOG("Missing player name");
+        return;
+    }
+    //
+    m_players.clear();
+    m_players.push_back(std::make_shared<Player>(playerName));
+    //
+    _addAIPlayers();
 }
 
-int Game::PlayersAlive() const
+bool ServerGame::CanStartGame()
+{
+    if(m_players.size() == 0 || m_gameState != GameState::Waiting)
+    {
+        return false;
+    }
+    return true;
+}
+
+int ServerGame::PlayersAlive() const
 {
     int nbAlive=0;
     for(Joueur* j : vectorPlayers)
@@ -92,7 +75,7 @@ int Game::PlayersAlive() const
     return nbAlive;
 }
 
-int Game::GetPlayerPosition(Joueur* j)//return position inside the array
+int ServerGame::GetPlayerPosition(Joueur* j)//return position inside the array
 {
 	int i = 0;
    	while (j->GetName() != vectorPlayers.at(i)->GetName())
@@ -101,13 +84,13 @@ int Game::GetPlayerPosition(Joueur* j)//return position inside the array
 
 }   
 
-void Game::PrintDefausse()
+void ServerGame::PrintDefausse()
 {
     std::string card = Utils::CardTypeToString(defausse.type);
     std::cout << card << std::endl;
 }
 
-void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int pos current player position
+void ServerGame::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int pos current player position
 {
     bool present = false;
 	std::string input;
@@ -135,7 +118,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
                         {
                             std::cout << "You guessed it! : " <<std::endl;
                             vectorPlayers.at(i)->isDead = true;
-                            playedCard.at(i).cards.push_back(c);
+                            m_playedCards.at(i).cards.push_back(c);
                         }
                         else
                         {
@@ -184,13 +167,13 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
                         {    
                             std::cout << "You lose" <<std::endl ;
                             vectorPlayers.at(pos)->isDead = true;
-                            playedCard.at(pos).cards.push_back(myCard);
+                            m_playedCards.at(pos).cards.push_back(myCard);
                         }
                         else if(otherCard.type < myCard.type)
                         {
                             std::cout << "You win the battle"  <<std::endl ;
                             vectorPlayers.at(index)->isDead = true;
-                            playedCard.at(index).cards.push_back(otherCard);
+                            m_playedCards.at(index).cards.push_back(otherCard);
                         }
                         else{/*do nothing*/}
                         present = true;
@@ -309,16 +292,51 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
     }
 }
 
-void Game::PlayRound(Deck deck)
+void ServerGame::StartGame()
 {
+    m_gameState = GameState::InProcess;
+    _startGame();
+}
+
+void ServerGame::ForceStopGame()
+{
+}
+
+void ServerGame::_startGame()
+{
+    bool gameIsRunning = true;
+    while (gameIsRunning == true)
+    {
+        Deck deck;
+        deck.InitDeck();
+        _playRound(deck);
+        //
+        gameIsRunning = _checkForWinner();
+        _prepareForNextRound();
+    }
+
+    auto winner = _getWinner();
+    std::cout << "The winner is ";
+    winner->PrintName();
+    std::cout << std::endl;
+    std::cout << "The final results are :" << std::endl;
+    for(auto player : m_players)
+    {
+        std::cout << player->GetName() << " have " << player->GetNumberOfPoints() << " point(s) " << std::endl;
+    }
+}
+
+void ServerGame::_playRound(const Deck& _deck)
+{
+    Deck deck = _deck;
     Card discard;
     Card c;
     bool playerExist;
     defausse = deck.PickCard();
     PrintDefausse();
-    
+
     //si 2 joueurs => pioche trois cartes et les montre a tous le monde //GAME RULE2
-    if(PlayersAlive() == 2)                           
+    if(PlayersAlive() == 2)
     {
         std::cout << "DISCARTED CARDS"<< std::endl;
         discard = deck.PickCard();
@@ -331,9 +349,9 @@ void Game::PlayRound(Deck deck)
     }
 
     //EVERYONE RECIEVE ONE CARD //GAME RULE3
-    for(int i = 0; i <numbreOfPlayers; i++)
+    for(int i = 0; i <m_numberOfPlayers; i++)
     {
-        auto pickedCard1 = deck.PickCard(); 
+        auto pickedCard1 = deck.PickCard();
         vectorPlayers.at(i)->AddCard(pickedCard1);
         vectorPlayers.at(i)->PrintName();
         vectorPlayers.at(i)->PrintHand();
@@ -341,7 +359,7 @@ void Game::PlayRound(Deck deck)
 
 
 
-    while(deck.SizeDeck() > 0)  
+    while(deck.SizeDeck() > 0)
     {
         //CHECK MORE THAN  PLAYER AVAILABLE
        if( PlayersAlive() <= 1)
@@ -349,7 +367,7 @@ void Game::PlayRound(Deck deck)
            break;
        }
 
-        for(int i =0  ; i <numbreOfPlayers; i++)
+        for(int i =0  ; i <m_numberOfPlayers; i++)
         {
             if(vectorPlayers.at(i)->isDead == false)
             {
@@ -357,7 +375,7 @@ void Game::PlayRound(Deck deck)
             if(vectorPlayers.at(i)->GetPlayerProtection() == true)
             {
                 std::cout<< "No longer protected" <<std::endl;
-                vectorPlayers.at(i)->RemovePlayerProtection(); 
+                vectorPlayers.at(i)->RemovePlayerProtection();
             }
 
             vectorPlayers.at(i)->PrintName();
@@ -390,7 +408,7 @@ void Game::PlayRound(Deck deck)
                     do
                     {
                         c = vectorPlayers.at(i)->ChoisirCarte();
-                        playedCard.at(i).cards.push_back(c);
+                        m_playedCards.at(i).cards.push_back(c);
                         /*std::cout << "which one do u want to play:  ";
                         std::string userChoice;
                         getline(std::cin, userChoice); //respect Case letters
@@ -399,9 +417,9 @@ void Game::PlayRound(Deck deck)
                     } while( playerExist == false);
                     CardEffectCheck(c, &deck , vectorPlayers.at(i) ,i);
                     std::cout << "========= Cartes deja jouees ==========" <<std::endl;
-                    for (unsigned int k = 0; k< playedCard.at(i).cards.size(); k++)
+                    for (unsigned int k = 0; k< m_playedCards.at(i).cards.size(); k++)
                     {
-                        std::string s = Utils::CardTypeToString(playedCard.at(i).cards.at(k).type);
+                        std::string s = Utils::CardTypeToString(m_playedCards.at(i).cards.at(k).type);
                         std::cout << s << std::endl;
                     }
                     std::cout << "=======================================" <<std::endl;
@@ -417,20 +435,20 @@ void Game::PlayRound(Deck deck)
             }
             if (deck.SizeDeck() == 0)
             {break;}
-        }    
+        }
     }
 
     if (PlayersAlive() <= 1)
     {
         for(unsigned int i = 0 ; i < vectorPlayers.size() ; i++ )
         {
-            
+
             if(vectorPlayers.at(i)->isDead == false)
             {
                 vectorPlayers.at(i)->WinAPoint();
                 std::cout << "The winner of this round is : " << std::endl;
                 vectorPlayers.at(i)->PrintName();
-                std::cout <<vectorPlayers.at(i)->GetNbPoints() << " point(s)" << std::endl;
+                std::cout <<vectorPlayers.at(i)->GetNumberOfPoints() << " point(s)" << std::endl;
             }
         }
     }
@@ -440,7 +458,7 @@ void Game::PlayRound(Deck deck)
         Card win;
         win.type = CardType::None;
         for(unsigned int i = 0 ; i < vectorPlayers.size() ; i++ )
-        {   
+        {
             if(vectorPlayers.at(i)->isDead == false )
             {
                 if(vectorPlayers.at(i)->TakeCardTop().type > win.type)
@@ -453,62 +471,87 @@ void Game::PlayRound(Deck deck)
         vectorPlayers.at(winner)->WinAPoint();
         std::cout << "The winner of this round is : " << std::endl;
         vectorPlayers.at(winner)->PrintName();
-        std::cout <<vectorPlayers.at(winner)->GetNbPoints() << " point(s)" << std::endl;
+        std::cout <<vectorPlayers.at(winner)->GetNumberOfPoints() << " point(s)" << std::endl;
     }
 }
 
-void Game::PlayGame()
+bool ServerGame::_checkForWinner()
 {
-    std::string nombreJ;
-    std::cout << "A combien de joueurs voulez-vous jouer ?" << std::endl;
-    getline(std::cin, nombreJ);
-    int nb = std::stoi(nombreJ);
-    InitPlayers(nb);
-    int i = -1;
-    while (i== -1)
+    auto winnerPos = _getWinnerPos();
+    if(winnerPos != m_players.end())
     {
-        Deck deck;
-        deck.InitDeck();
-        PlayRound(deck);
-        Between2Rounds();
-        i = Winner(nb);
+        return true;
     }
-    std::cout << "Le gagnant est ";
-    vectorPlayers.at(i)->PrintName();
-    std::cout << "Le resultat final est : " << std::endl;
-    for(auto j : vectorPlayers)
-    {
-        j->PrintName();
-        std::cout <<vectorPlayers.at(GetPlayerPosition(j))->GetNbPoints() << " point(s)" << std::endl;
-    }
-
+    return false;
 }
 
-void Game::Between2Rounds()
+ServerGame::PlayersContainer::iterator ServerGame::_getWinnerPos()
 {
-    for(auto j : vectorPlayers)
-    {
-        int pos = GetPlayerPosition(j);
-        vectorPlayers.at(pos)->isDead = false;
-        vectorPlayers.at(pos)->RemovePlayerProtection();
-        vectorPlayers.at(pos)->EmptyPlayerDeck();
-        playedCard.at(pos).cards.clear();
-    }
+    return m_players.end();
 }
 
-int Game::Winner(int nbJoueur)
+ServerGame::PlayerPtr ServerGame::_getWinner()
 {
-    int maxPoints;
-    if (nbJoueur == 2)
+    int8_t maxPoints = -1;
+    if(m_numberOfPlayers == 2)
+    {
         maxPoints = 7;
-    if (nbJoueur == 3)
-        maxPoints = 5;
-    if (nbJoueur == 4)
-        maxPoints = 4;
-    for (int i=0; i<nbJoueur; i++)
-    {
-        if (vectorPlayers.at(i)->GetNbPoints() == maxPoints)
-            return i;
     }
-    return -1;
+    else if(m_numberOfPlayers == 3)
+    {
+        maxPoints = 5;
+    }
+    else if(m_numberOfPlayers == 4)
+    {
+        maxPoints = 4;
+    }
+
+    auto it = std::find_if(std::begin(m_players), std::end(m_players), [maxPoints](const PlayerPtr player)
+    {
+        return player->GetNumberOfPoints() == maxPoints;
+    });
+
+    if(it != m_players.end())
+    {
+        return *it;
+    }
+    return nullptr;
+}
+
+void ServerGame::_prepareForNextRound()
+{
+    for(auto player : m_players)
+    {
+        player->isDead = false;
+        player->RemovePlayerProtection();
+        player->EmptyPlayerDeck();
+    }
+    //
+    for(auto& playCards : m_playedCards)
+    {
+        playCards.cards.clear();
+    }
+}
+
+void ServerGame::_addAIPlayers()
+{
+    int32_t numberOfAIPlayers = (m_numberOfPlayers - 1);
+    std::string playerName;
+    if(numberOfAIPlayers < 2)
+    {
+        playerName = "BotAnne";
+        m_players.push_back(std::make_shared<AIPlayer>(playerName));
+    }
+    //
+    if(numberOfAIPlayers < 3)
+    {
+        playerName = "BotGeorges";
+        m_players.push_back(std::make_shared<AIPlayer>(playerName));
+    }
+    //
+    if(numberOfAIPlayers < 4)
+    {
+        playerName = "BotMaria";
+        m_players.push_back(std::make_shared<AIPlayer>(playerName));
+    }
 }

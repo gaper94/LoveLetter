@@ -30,19 +30,18 @@ add_library(GameCommon SHARED  GameCommon/GameDefinitions.h
                                GameCommon/GameUtils.h
                                GameCommon/GameUtils.cpp)
 
+add_library(ToIntegrate STATIC  to_be_integrated/Joueur.h
+                                to_be_integrated/Joueur.cpp
+                                to_be_integrated/Deck.h
+                                to_be_integrated/Deck.cpp
+                                to_be_integrated/Card.h
+                                to_be_integrated/Bot_Random.h
+                                to_be_integrated/Bot_Random.cpp)
+
 add_executable(game_controller App/Application.h
                                GameController/GameController.h
                                GameController/GameController.cpp
-                               GameController/main.cpp
-                               to_be_integrated/Joueur.h
-                               to_be_integrated/Joueur.cpp
-                               to_be_integrated/Game.h
-                               to_be_integrated/Game.cpp
-                               to_be_integrated/Deck.h
-                               to_be_integrated/Deck.cpp
-                               to_be_integrated/Card.h
-                               to_be_integrated/Bot_Random.h
-                               to_be_integrated/Bot_Random.cpp)
+                               GameController/main.cpp )
 
 add_executable(view App/Application.h
                               View/View.h
@@ -50,10 +49,13 @@ add_executable(view App/Application.h
                               View/main.cpp)
 
 add_executable(game_server App/Application.h
+                           GameServer/ServerDebug.h
                            GameServer/GameServer.h
                            GameServer/GameServer.cpp
+                           GameServer/Game.h
+                           GameServer/Game.cpp
                            GameServer/main.cpp)
 
 target_link_libraries(game_controller Network Serialize GameCommon)
 target_link_libraries(view Network Serialize)
-target_link_libraries(game_server Network Serialize)
+target_link_libraries(game_server Network Serialize GameCommon ToIntegrate)

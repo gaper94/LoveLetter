@@ -8,9 +8,10 @@ class Joueur
 {     
 public: 
     Joueur(const std::string& name);  
+    ~Joueur();
     const std::string& GetName() const;
     void PrintName();
-    int GetNbPoints() const;
+    int GetNumberOfPoints() const;
     bool IsDead() const;
     void PrintHand();
     void AddCard(const Card& toAdd);
