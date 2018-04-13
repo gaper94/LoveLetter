@@ -1,4 +1,7 @@
-#include "Card.h"
+#include "GameUtils.h"
+
+namespace Utils
+{
 
 std::string CardTypeToString(CardType cardType)
 {
@@ -57,4 +60,6 @@ CardType CardTypeFromString(const std::string& cardType)
     {
         return CardType::None;
     }
+}
+
 }

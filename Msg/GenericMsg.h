@@ -1,10 +1,8 @@
 #ifndef GENERIC_MSG_H
 #define GENERIC_MSG_H
 
-#include <vector>
 #include <string>
 #include <map>
-#include <stdint.h>
 #include "Serializer.h"
 #include "Deserializer.h"
 

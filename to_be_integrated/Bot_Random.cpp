@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
+#include "../GameCommon/GameUtils.h"
 
 Bot_Random::Bot_Random(const std::string& name)
     : Joueur(name)
@@ -10,7 +11,7 @@ Bot_Random::Bot_Random(const std::string& name)
 
 void Bot_Random::DevinerRandom(Card c)
 {
-	std::cout << "Vous avez la carte:" << CardTypeToString(c.type) << "?" << std::endl;
+    std::cout << "Vous avez la carte:" << Utils::CardTypeToString(c.type) << "?" << std::endl;
 }
 
 Card Bot_Random::RandomCarte()
@@ -32,7 +33,7 @@ Card Bot_Random::ChoisirCarte()
 	Card carte1 = playerDeck[0];
 	Card carte2 = playerDeck[1];
 
-	if ((CardTypeToString(carte1.type) != "") && (CardTypeToString(carte2.type) != ""))
+    if ((Utils::CardTypeToString(carte1.type) != "") && (Utils::CardTypeToString(carte2.type) != ""))
     {
         if (carte1.type==CardType::Princess)
             return carte2;
@@ -51,7 +52,7 @@ Card Bot_Random::DevinerCarte()
     int i = dis(gen);
     std::string s = std::to_string(i);
     Card c;
-    c.type = CardTypeFromString(s);
+    c.type = Utils::CardTypeFromString(s);
     return c;
 }
 

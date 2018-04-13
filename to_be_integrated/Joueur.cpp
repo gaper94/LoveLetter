@@ -1,5 +1,6 @@
 #include "Joueur.h"
 #include <iostream>
+#include "../GameCommon/GameUtils.h"
 
 Joueur::Joueur(const std::string& _name)
     : name(_name)
@@ -15,7 +16,7 @@ void Joueur::PrintHand()
 {
     for(const auto& current : playerDeck)
     {
-        std::cout<<"   " << CardTypeToString(current.type) << std::endl;
+        std::cout<<"   " << Utils::CardTypeToString(current.type) << std::endl;
     }
 }
 
@@ -48,7 +49,7 @@ Card Joueur::TakeCardByName(const std::string& name)
 {
 	for(const auto & card : playerDeck)
 	{
-		if(CardTypeToString(card.type) == name)
+        if(Utils::CardTypeToString(card.type) == name)
 		{
 			return card;
 		}
@@ -91,7 +92,7 @@ bool Joueur::PlayACard(Card& c)
     Card first = playerDeck.front();
 	if (c.type == toPlay.type)
 	{
-		std::cout << CardTypeToString(toPlay.type) << std::endl; //print  it 
+        std::cout << Utils::CardTypeToString(toPlay.type) << std::endl; //print  it
 		playerDeck.pop_back();	
 		return true;			   					 // remove it from the deck
 	}
@@ -103,7 +104,7 @@ bool Joueur::PlayACard(Card& c)
 			buf = playerDeck[1];
 			playerDeck[0] = buf;
 			playerDeck.pop_back();
-			std::cout << CardTypeToString(c.type) << std::endl;
+            std::cout << Utils::CardTypeToString(c.type) << std::endl;
 			return true;
 		}
 		else
@@ -139,7 +140,7 @@ Card Joueur::DevinerCarte()
         getline(std::cin, input); 
     }
     Card c;
-    c.type = CardTypeFromString(input);
+    c.type = Utils::CardTypeFromString(input);
     return c;
 }
 

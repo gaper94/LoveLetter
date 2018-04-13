@@ -4,7 +4,6 @@
 
 int main()
 {
-
     GameController gameController;
     if(gameController.Init({}) == false)
     {

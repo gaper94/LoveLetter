@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Bot_Random.h"
 #include <iostream>
+#include "../GameCommon/GameUtils.h"
 
 bool Game::AllProtected(Joueur * moi)
 {
@@ -102,7 +103,7 @@ int Game::GetPlayerPosition(Joueur* j)//return position inside the array
 
 void Game::PrintDefausse()
 {
-    std::string card = CardTypeToString(defausse.type);
+    std::string card = Utils::CardTypeToString(defausse.type);
     std::cout << card << std::endl;
 }
 
@@ -110,7 +111,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
 {
     bool present = false;
 	std::string input;
-    if( CardTypeToString(c.type) == "Guard")
+    if( Utils::CardTypeToString(c.type) == "Guard")
     {
         if(AllProtected(j))
         {}
@@ -130,7 +131,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
                         int i = GetPlayerPosition(p);
                         Card input = vectorPlayers.at(pos)->DevinerCarte();
                         Card c = p->TakeCardTop(); 
-                        if( CardTypeToString(input.type) ==  CardTypeToString(c.type) )
+                        if( Utils::CardTypeToString(input.type) ==  Utils::CardTypeToString(c.type) )
                         {
                             std::cout << "You guessed it! : " <<std::endl;
                             vectorPlayers.at(i)->isDead = true;
@@ -147,7 +148,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
         }
     }
 
-    if ( CardTypeToString(c.type) == "Princess" )
+    if ( Utils::CardTypeToString(c.type) == "Princess" )
     {
         std::cout << "You lose"  <<std::endl ;
         vectorPlayers.at(pos)->isDead = true;
@@ -155,7 +156,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
     }
 
 
-    if( CardTypeToString(c.type) == "Baron" )
+    if( Utils::CardTypeToString(c.type) == "Baron" )
     {
         if(AllProtected(j))
         {}
@@ -174,10 +175,10 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
                     {
                         int index = GetPlayerPosition(p);
                         Card otherCard = vectorPlayers.at(index)->TakeCardTop();
-                        std::cout << CardTypeToString(otherCard.type) << std::endl;
+                        std::cout << Utils::CardTypeToString(otherCard.type) << std::endl;
 
                         Card myCard =  vectorPlayers.at(pos)->TakeCardTop();
-                        std::cout << CardTypeToString(myCard.type) << std::endl;
+                        std::cout << Utils::CardTypeToString(myCard.type) << std::endl;
 
                         if( otherCard.type > myCard.type)//my caard is lower
                         {    
@@ -199,13 +200,13 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
         }		
     }
 
-    if( CardTypeToString(c.type) == "Prince" )
+    if( Utils::CardTypeToString(c.type) == "Prince" )
     {
         if(AllProtected(j))
         {
             std::cout << "All other players are protected, you've no choice" << std::endl;
             Card discard = vectorPlayers.at(pos)->TakeCardTop();
-            if(CardTypeToString(discard.type) == "Princess")
+            if(Utils::CardTypeToString(discard.type) == "Princess")
             {
                 vectorPlayers.at(pos)->isDead = true;
                 std::cout <<"You lose !" << std::endl;
@@ -232,7 +233,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
                     {
                         int i= GetPlayerPosition(p);
                         Card discard = vectorPlayers.at(i)->TakeCardTop();
-                        if(CardTypeToString(discard.type) == "Princess")
+                        if(Utils::CardTypeToString(discard.type) == "Princess")
                         {
                             vectorPlayers.at(i)->isDead = true;
                             std::cout <<"You lose !" << std::endl;
@@ -250,13 +251,13 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
         }	
     }
 
-    if( CardTypeToString(c.type) == "Handmaid" )
+    if( Utils::CardTypeToString(c.type) == "Handmaid" )
     {
         j->ProtectPlayer();
         std::cout<< "You are protected this tour" <<std::endl;
     }
 
-    if( CardTypeToString(c.type) == "King" )
+    if( Utils::CardTypeToString(c.type) == "King" )
     {
         if(AllProtected(j))
         {}
@@ -282,7 +283,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
         }
     }
 
-    if( CardTypeToString(c.type) == "Priest" )
+    if( Utils::CardTypeToString(c.type) == "Priest" )
     {
          if(AllProtected(j))
         {}
@@ -321,11 +322,11 @@ void Game::PlayRound(Deck deck)
     {
         std::cout << "DISCARTED CARDS"<< std::endl;
         discard = deck.PickCard();
-        std::cout << CardTypeToString(discard.type) << std::endl;
+        std::cout << Utils::CardTypeToString(discard.type) << std::endl;
         discard = deck.PickCard();
-        std::cout << CardTypeToString(discard.type) << std::endl;
+        std::cout << Utils::CardTypeToString(discard.type) << std::endl;
         discard = deck.PickCard();
-        std::cout << CardTypeToString(discard.type) << std::endl;
+        std::cout << Utils::CardTypeToString(discard.type) << std::endl;
         std::cout << "================" << std::endl;
     }
 
@@ -362,7 +363,7 @@ void Game::PlayRound(Deck deck)
             vectorPlayers.at(i)->PrintName();
             Card inHand = vectorPlayers.at(i)->TakeCardTop();
             Card pick = deck.PickCard();
-            if(CardTypeToString(pick.type) == "Countess" && (CardTypeToString(inHand.type) =="Prince" || CardTypeToString(inHand.type)=="King"))
+            if(Utils::CardTypeToString(pick.type) == "Countess" && (Utils::CardTypeToString(inHand.type) =="Prince" || Utils::CardTypeToString(inHand.type)=="King"))
             {
                 vectorPlayers.at(i)->AddCard(pick);
                 std::cout << "Your cards " << std::endl;
@@ -372,7 +373,7 @@ void Game::PlayRound(Deck deck)
             }
             else
             {
-                if (CardTypeToString(inHand.type) == "Countess" && (CardTypeToString(pick.type) =="Prince" || CardTypeToString(pick.type)=="King"))
+                if (Utils::CardTypeToString(inHand.type) == "Countess" && (Utils::CardTypeToString(pick.type) =="Prince" || Utils::CardTypeToString(pick.type)=="King"))
                 {
                     vectorPlayers.at(i)->AddCard(pick);
                     std::cout << "Your cards " << std::endl;
@@ -400,7 +401,7 @@ void Game::PlayRound(Deck deck)
                     std::cout << "========= Cartes deja jouees ==========" <<std::endl;
                     for (unsigned int k = 0; k< playedCard.at(i).cards.size(); k++)
                     {
-                        std::string s = CardTypeToString(playedCard.at(i).cards.at(k).type);
+                        std::string s = Utils::CardTypeToString(playedCard.at(i).cards.at(k).type);
                         std::cout << s << std::endl;
                     }
                     std::cout << "=======================================" <<std::endl;
