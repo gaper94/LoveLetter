@@ -1,6 +1,8 @@
 #include "Joueur.h"
+#include <iostream>
 
-Joueur::Joueur(const std::string& _name) :  name(_name) 
+Joueur::Joueur(const std::string& _name)
+    : name(_name)
 {
 }
 
@@ -9,28 +11,17 @@ const std::string& Joueur::GetName() const
 	return name;
 }
 
- void Joueur::PrintHand()
- {
-    for(const auto& current : playerDeck) 
+void Joueur::PrintHand()
+{
+    for(const auto& current : playerDeck)
     {
-       std::cout<<"   " << CardTypeToString(current.type) << std::endl;
+        std::cout<<"   " << CardTypeToString(current.type) << std::endl;
     }
- }
+}
 
 int Joueur::GetNbPoints() const
 {
-	return nbPoints;
-}
-
-void Joueur::SetNbPoints(int nb)
-{
-	nbPoints = nb;
-}
-
-
-std::string Joueur::PrintNbPoints()
-{
-	return ("Nombre de points de " + name + " : "+ std::to_string(nbPoints));
+    return nbPoints;
 }
 	
 void Joueur::PrintName()
@@ -53,19 +44,7 @@ void Joueur::WinAPoint()
 	nbPoints++;
 }
 
-
-
-Card Joueur::TakeCard(size_t n) //by intex
-{
-	if(n > playerDeck.size())
-	{
-		 exit (EXIT_FAILURE);
-	}
-	Card c= playerDeck.at(n-1);
-    return c;
-}
-
-Card Joueur::TakeCardByName(const std::string& name) //by name
+Card Joueur::TakeCardByName(const std::string& name)
 {
 	for(const auto & card : playerDeck)
 	{
@@ -91,12 +70,10 @@ bool Joueur::IsDead() const
   return false;
 }
 
-void Joueur::ProtecdPlayer()
+void Joueur::ProtectPlayer()
 {
-	protect = true;//protected
+    protect = true;
 }
-
-
 
 void Joueur::RemovePlayerProtection()
 {
@@ -146,7 +123,7 @@ Card Joueur::ChoisirCarte()
 {
     std::cout << "which one do u want to play:  ";
     std::string userChoice;
-    getline(std::cin, userChoice); //respect Case letters
+    getline(std::cin, userChoice);
     Card c = TakeCardByName(userChoice);
     return c;
 }
@@ -154,7 +131,7 @@ Card Joueur::ChoisirCarte()
 Card Joueur::DevinerCarte()
 {
 	std::string input;
-	std::cout << "Guess his card : ";//==
+    std::cout << "Guess his card : ";
     getline(std::cin, input);
     while (input == "Guard") 
     {
@@ -169,7 +146,7 @@ Card Joueur::DevinerCarte()
 std::string Joueur::ChoisirJoueur(std::vector<Joueur*> vectorPlayer, int nbPlayers)
 {
 	std::string input;
-	std::cout << "Choose a player : ";//==
+    std::cout << "Choose a player : ";
     getline(std::cin, input); 
     return input;
 }

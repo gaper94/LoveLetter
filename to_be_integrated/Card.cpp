@@ -58,24 +58,3 @@ CardType CardTypeFromString(const std::string& cardType)
         return CardType::None;
     }
 }
-
-
-std::string GetCardStrength(CardType cardType)
-{
-    switch(cardType)
-    {
-        case CardType::Guard:      return "Choisissez un joueur et essayer de deviner sa carte";//
-        case CardType::Priest:     return "Regardez la main d'un autre joueur";//
-        case CardType::Baron:      return "Jusqu'au prochain tour, vous êtes protégé des effets des cartes des autres joueurs.";//done
-        case CardType::Handmaiden: return "Comparez votre carte avec celle d'un autre joueur, celui qui a la carte avec la plus faible valeur est éliminé de la manche";//
-        case CardType::Prince:     return "Choisissez un joueur (y comprisvous), celui-ci défausse la carte qu'il a en main pour en piocher une nouvelle.";//
-        case CardType::King:       return "Échangez votre main avec un autre joueur de votre choix.";//
-        case CardType::Countess:   return "En même temps que le King ou le Prince, alors vous devez défausser la carte de la Countess";
-        case CardType::Princess:   return "Si vous défaussez cette carte,vous êtes éliminé de la manche.";//done
-        default:                   return "";
-    }
-    return "";
-
-}
-
-

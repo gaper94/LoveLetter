@@ -3,14 +3,6 @@
 #include <algorithm>
 #include <iostream>
 
- void Deck::PrintDeck()
- {
-    for(Card& current : m_deck) 
-    {
-       std::cout << CardTypeToString(current.type) << std::endl;
-    }
- }
-
 void Deck::InitDeck()
 {
     m_deck.clear();

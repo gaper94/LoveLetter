@@ -1,7 +1,7 @@
 #ifndef GAME_DEFINITONS_H
 #define GAME_DEFINITONS_H
 
-enum class CardType  //enum 
+enum class CardType
 {
     None,
     Guard = 1,
@@ -14,7 +14,6 @@ enum class CardType  //enum
     Princess,
 };
 
-typedef unsigned char Id;
-
+using Id = unsigned char;
 
 #endif // GAME_DEFINITONS_H

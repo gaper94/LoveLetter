@@ -2,18 +2,17 @@
 #define CARD_H
 
 #include <string>
-#include "GameDefinitions.h"
+#include "../GameCommon/GameDefinitions.h"
 
 std::string CardTypeToString(CardType);
 CardType CardTypeFromString(const std::string&);
-std::string GetCardStrength(CardType);
 
 struct Card
 {
-    typedef unsigned char Strength;
+    using Strength = unsigned char;
 
-    CardType type ;      //1 2 3.. guard baron handmaid etc
-    Strength strength;  // which one is the stronger card
+    CardType type;
+    Strength strength;
 };
 
 #endif // CARD_H

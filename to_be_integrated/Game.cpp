@@ -1,20 +1,6 @@
 #include "Game.h"
-#include <algorithm>
-
-
-int Game::NbPlayerProtected()
-{
-    int i;
-	for(auto j : vectorPlayers)
-    {
-        if(j->GetPlayerProtection() == true)
-        {
-            i++;
-        }
-    }
-    return i;
-}
-
+#include "Bot_Random.h"
+#include <iostream>
 
 bool Game::AllProtected(Joueur * moi)
 {
@@ -35,26 +21,6 @@ bool Game::AllProtected(Joueur * moi)
     return true;  
 }
 
-void Game::PrintPlayers()
-{
-    for (auto j : vectorPlayers)
-    j->PrintName();
-}
-
-
-void Game::PlayersShowHands()
-{
-    for (auto j : vectorPlayers)
-    {
-        if(j->isDead == false)
-        {
-            j->PrintName();
-            j->PrintHand(); 
-        }
-    }
-}
-
-//nPlayer vector array of all the Players(Joueur.cpp)
 void Game::InitPlayers(int nbPlayers)
 {
     std::string in;
@@ -125,7 +91,6 @@ int Game::PlayersAlive() const
     return nbAlive;
 }
 
-
 int Game::GetPlayerPosition(Joueur* j)//return position inside the array
 {
 	int i = 0;
@@ -134,37 +99,6 @@ int Game::GetPlayerPosition(Joueur* j)//return position inside the array
 	return i;
 
 }   
-
-Joueur* Game::TakePlayer(int n)
-{
-    if(n > PlayersAlive()) //if n bigger than players available in the vector
-    {
-        exit (EXIT_FAILURE);
-    }
-    Joueur* j= vectorPlayers.at(n-1);
-    return j;
-}
-
-
-void Game::ErasePlayer(int n)
-{
-    vectorPlayers.erase(vectorPlayers.begin() + n);
-}
-
-
-Card Game::CardComppare(const Card& a,const Card& b)
-{
-    if(a.type > b.type)
-    {
-        return b;
-    }
-  return a;
-}
-
-Card Game::GetDefausse()
-{
-    return defausse;
-}
 
 void Game::PrintDefausse()
 {
@@ -318,7 +252,7 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
 
     if( CardTypeToString(c.type) == "Handmaid" )
     {
-        j->ProtecdPlayer();
+        j->ProtectPlayer();
         std::cout<< "You are protected this tour" <<std::endl;
     }
 
@@ -373,7 +307,6 @@ void Game::CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos)// int
         }
     }
 }
-
 
 void Game::PlayRound(Deck deck)
 {
@@ -485,8 +418,7 @@ void Game::PlayRound(Deck deck)
             {break;}
         }    
     }
-    //ALL PLAYERS SHOW HANDS
-    PlayersShowHands();//testonly
+
     if (PlayersAlive() <= 1)
     {
         for(unsigned int i = 0 ; i < vectorPlayers.size() ; i++ )
@@ -523,7 +455,6 @@ void Game::PlayRound(Deck deck)
         std::cout <<vectorPlayers.at(winner)->GetNbPoints() << " point(s)" << std::endl;
     }
 }
-
 
 void Game::PlayGame()
 {
@@ -580,12 +511,3 @@ int Game::Winner(int nbJoueur)
     }
     return -1;
 }
-
-
-int main()
-{
-    Game game;
-    game.PlayGame();
-    return 0;
-}
-

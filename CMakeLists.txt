@@ -29,7 +29,18 @@ add_library(Serialize SHARED    Msg/Deserializer.h
 add_executable(game_controller App/Application.h
                                GameController/GameController.h
                                GameController/GameController.cpp
-                               GameController/main.cpp)
+                               GameController/main.cpp
+                               GameCommon/GameDefinitions.h
+                               to_be_integrated/Joueur.h
+                               to_be_integrated/Joueur.cpp
+                               to_be_integrated/Game.h
+                               to_be_integrated/Game.cpp
+                               to_be_integrated/Deck.h
+                               to_be_integrated/Deck.cpp
+                               to_be_integrated/Card.h
+                               to_be_integrated/Card.cpp
+                               to_be_integrated/Bot_Random.h
+                               to_be_integrated/Bot_Random.cpp)
 
 add_executable(view App/Application.h
                               View/View.h

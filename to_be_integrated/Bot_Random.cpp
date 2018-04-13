@@ -1,18 +1,18 @@
 #include "Bot_Random.h"
+#include <random>
+#include <algorithm>
+#include <iostream>
 
+Bot_Random::Bot_Random(const std::string& name)
+    : Joueur(name)
+{
+}
 
-/*IA Aléatoire: Joue Aléatoirement mais jouera jamais la princesse (aka noob :D ) */
-
-Bot_Random::Bot_Random(const std::string& name): Joueur(name) {}
-
-
-
-//afficher la carte a deviner
-void Bot_Random::DevinerRandom(Card c){
+void Bot_Random::DevinerRandom(Card c)
+{
 	std::cout << "Vous avez la carte:" << CardTypeToString(c.type) << "?" << std::endl;
 }
 
-//choisir une carte aleatoire
 Card Bot_Random::RandomCarte()
 {
 	Card c1 = playerDeck[0];
@@ -68,4 +68,3 @@ std::string Bot_Random::ChoisirJoueur(std::vector <Joueur*> vectorPlayers , int 
     std::cout << vectorPlayers[i]->GetName() << std::endl;
 	return vectorPlayers[i]->GetName();
 }
-
