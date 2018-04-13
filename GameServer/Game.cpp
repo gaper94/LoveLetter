@@ -536,6 +536,12 @@ void ServerGame::_prepareForNextRound()
 void ServerGame::_addAIPlayers()
 {
     int32_t numberOfAIPlayers = (m_numberOfPlayers - 1);
+    if(numberOfAIPlayers < 1)
+    {
+        // No AI players needs to be added
+        return;
+    }
+
     std::string playerName;
     if(numberOfAIPlayers < 2)
     {
