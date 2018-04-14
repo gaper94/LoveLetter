@@ -2,11 +2,16 @@
 #define JOUEUR_H
 #include <string>
 #include <vector>
+#include <memory>
 #include "Deck.h"
 
 class Joueur
 {     
-public: 
+public:
+    using Player = Joueur;
+    using PlayerPtr = std::shared_ptr<Joueur>;
+    using PlayersContainer = std::vector<PlayerPtr>;
+
     Joueur(const std::string& name);  
     ~Joueur();
     const std::string& GetName() const;
@@ -25,7 +30,7 @@ public:
     void WinAPoint();
     virtual Card ChoisirCarte();
     virtual Card DevinerCarte();
-    virtual std::string ChoisirJoueur(std::vector<Joueur*> vectorPlayer, int nbPlayers);
+    virtual std::string ChoisirJoueur(PlayersContainer& vectorPlayer, int nbPlayers);
     bool isDead = false;
     std::vector<Card> playerDeck;
 public:    

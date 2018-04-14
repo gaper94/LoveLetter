@@ -56,7 +56,7 @@ Card BotRandom::DevinerCarte()
     return c;
 }
 
-std::string BotRandom::ChoisirJoueur(std::vector <Joueur*> vectorPlayers , int nbPlayers)
+std::string BotRandom::ChoisirJoueur(PlayersContainer& vectorPlayers , int nbPlayers)
 {
     std::random_device rd;
     std::mt19937 gen(rd());

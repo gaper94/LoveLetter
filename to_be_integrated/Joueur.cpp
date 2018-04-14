@@ -148,7 +148,7 @@ Card Joueur::DevinerCarte()
     return c;
 }
 
-std::string Joueur::ChoisirJoueur(std::vector<Joueur*> vectorPlayer, int nbPlayers)
+std::string Joueur::ChoisirJoueur(PlayersContainer& vectorPlayer, int nbPlayers)
 {
 	std::string input;
     std::cout << "Choose a player : ";

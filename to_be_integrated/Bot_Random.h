@@ -13,7 +13,7 @@ class BotRandom: public Joueur
     Card RandomCarte();
     Card DevinerCarte();
     void DevinerRandom(Card c);
-	std::string ChoisirJoueur(std::vector<Joueur*> vectorPlayer , int nbPlayers);
+    std::string ChoisirJoueur(PlayersContainer& vectorPlayer , int nbPlayers);
 };
 
 #endif

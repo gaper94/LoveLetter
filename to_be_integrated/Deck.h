@@ -7,13 +7,15 @@
 class Deck
 {
 public:
+    using DeckStorage = std::vector<Card>;
+
     int SizeDeck() const;
     void InitDeck();
     Card PickCard();
     bool IsEmpty() const;
 private:
     void ShuffleDeck();
-    std::vector<Card> m_deck;
+    DeckStorage m_deck;
 };
 
 #endif // DECK_H

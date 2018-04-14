@@ -5,21 +5,16 @@
 #include "../Network/IConnection.h"
 #include "../to_be_integrated/Joueur.h"
 #include "../to_be_integrated/Bot_Random.h"
-
-struct PlayedCards
-{
-    Joueur* j;
-    std::vector<Card> cards;
-};
+#include "../to_be_integrated/Deck.h"
 
 class ServerGame
 {
 public:
     using Msg = IConnection::Msg;
-    using Player = Joueur;
+    using Player = Joueur::Player;
+    using PlayerPtr = Joueur::PlayerPtr;
+    using PlayersContainer = Joueur::PlayersContainer;
     using AIPlayer = BotRandom;
-    using PlayerPtr = std::shared_ptr<Joueur>;
-    using PlayersContainer = std::vector<PlayerPtr>;
 
     enum class GameState
     {
@@ -27,16 +22,17 @@ public:
         InProcess,
     };
 
-    int  PlayersAlive() const;
+    struct PlayedCards
+    {
+        PlayerPtr player;
+        Deck::DeckStorage cards;
+    };
+
     void StartGame();
     void ForceStopGame();
     void InitPlayers(const Msg& msg);
     bool CanStartGame();
 
-    int GetPlayerPosition(Joueur* j);
-    bool AllProtected(Joueur * moi);
-    void CardEffectCheck(const Card& c, Deck * deck ,Joueur * j,int pos);
-    void PrintDefausse();
 private:
     void _startGame();
     void _playRound(const Deck& deck);
@@ -45,13 +41,17 @@ private:
     PlayerPtr _getWinner();
     void _prepareForNextRound();
     void _addAIPlayers();
-
-    std::vector <Joueur*> vectorPlayers;
-    Card defausse;
-    std::vector<PlayedCards> m_playedCards;
     //
+    int  _playersAlive() const;
+    int _getPlayerPosition(PlayerPtr player);
+    bool _allProtected(PlayerPtr player);
+    void _cardEffectCheck(const Card& c, Deck& deck, PlayerPtr player, int pos);
+    void _printDefausse();
+
     int32_t m_numberOfPlayers = 0;
     PlayersContainer m_players;
+    Card m_defausse;
+    std::vector<PlayedCards> m_playedCards;
     GameState m_gameState = GameState::Waiting;
 };
 

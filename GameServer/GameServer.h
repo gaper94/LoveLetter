@@ -13,7 +13,7 @@ public:
     bool Init(const Arguments& args) final;
     void Update() final;
 
-private:
+//private:
 
     void _onGameControllerConnect(IConnection::ConnectionId id);
     void _onGameControllerDisconnect(IConnection::ConnectionId id);
