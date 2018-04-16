@@ -33,7 +33,7 @@ public:
 
 private:
     void _startGame();
-    void _playRound(const Deck& deck);
+    void _playRound();
     bool _checkForWinner();
     PlayersContainer::iterator _getWinnerPos();
     PlayerPtr _getWinner();

@@ -68,10 +68,7 @@ void ServerGame::_startGame()
     bool gameIsRunning = true;
     while (gameIsRunning == true)
     {
-        Deck deck;
-        deck.InitDeck();
-        _playRound(deck);
-        //
+        _playRound();
         bool hasWinner = _checkForWinner();
         gameIsRunning = hasWinner == true ? false : true;
         _prepareForNextRound();
@@ -88,14 +85,18 @@ void ServerGame::_startGame()
     }
 }
 
-void ServerGame::_playRound(const Deck& _deck)
+void ServerGame::_playRound()
 {
-    Deck deck = _deck;
-    Card c;
-    bool playerExist;
+    Deck deck;
     m_defausse = deck.PickCard();
-    _printDefausse();
 
+    // Send defausse card
+    {
+        Msg msg;
+        msg.name = "defausse_card";
+        msg.AddValue("card", m_defausse);
+        _sendMsg(msg);
+    }
     // When game is with two players, remove some cards
     std::vector<Card> discartedCards;
     if(_playersAlive() == 2)
@@ -110,10 +111,12 @@ void ServerGame::_playRound(const Deck& _deck)
         }
     }
     //
-    Msg msg;
-    msg.name = "discarted_cards";
-    msg.AddValue("cards", discartedCards);
-    _sendMsg(msg);
+    {
+        Msg msg;
+        msg.name = "discarted_cards";
+        msg.AddValue("cards", discartedCards);
+        _sendMsg(msg);
+    }
 
     // First deal one card for every player
     for(int i = 0; i <m_numberOfPlayers; i++)
@@ -122,6 +125,8 @@ void ServerGame::_playRound(const Deck& _deck)
         m_players.at(i)->AddCard(pickedCard1);
     }
 
+    bool playerExist;
+    Card c;
     while(deck.SizeDeck() > 0)
     {
         if( _playersAlive() <= 1)

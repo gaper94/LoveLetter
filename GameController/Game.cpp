@@ -12,10 +12,22 @@ void ClientGame::Update()
 
 void ClientGame::OnMsgReceived(const Msg& msg)
 {
-    // This message is relevant to view, just forward it
+    // Relevant only to the view, just forward it
     if(msg.name == "discarted_cards")
     {
         _sendMsgToView(msg);
+    }
+    else if(msg.name == "defausse_card")
+    {
+        _sendMsgToView(msg);
+    }
+    else if(msg.name == "input_request")
+    {
+        _sendMsgToView(msg);
+    }
+    else if(msg.name == "input_response")
+    {
+        _sendMsgToServer(msg);
     }
 }
 

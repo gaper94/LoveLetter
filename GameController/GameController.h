@@ -23,8 +23,8 @@ private:
     void _onViewMsgReceived(IConnection::ConnectionId id, const IConnection::Msg& msg);
     void _onServerMsgReceived(IConnection::ConnectionId id, const IConnection::Msg& msg);
 
-    void _sendToView(IConnection::Msg& msg);
-    void _sendToServer(IConnection::Msg& msg);
+    void _sendToView(const IConnection::Msg& msg);
+    void _sendToServer(const IConnection::Msg& msg);
 
     IConnection::Ptr m_viewConnection = nullptr;
     IConnection::ConnectionId m_viewConnectionId = IConnection::InvalidConnectionId;

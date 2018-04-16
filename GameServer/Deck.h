@@ -9,11 +9,12 @@ class Deck
 public:
     using DeckStorage = std::vector<Card>;
 
+    Deck();
     int SizeDeck() const;
-    void InitDeck();
     Card PickCard();
     bool IsEmpty() const;
 private:
+    void _initDeck();
     void ShuffleDeck();
     DeckStorage m_deck;
 };

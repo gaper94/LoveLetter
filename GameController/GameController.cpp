@@ -93,6 +93,16 @@ bool GameController::Init(const Arguments& args)
             result = false;
         }
     }
+    //
+    auto serverSender = [this](const IConnection::Msg& msg)
+    {
+        _sendToServer(msg);
+    };
+    auto viewSender = [this](const IConnection::Msg& msg)
+    {
+        _sendToView(msg);
+    };
+    m_clientGame.Init(serverSender, viewSender);
 
     return result;
 }
@@ -131,15 +141,19 @@ void GameController::_onServerDisconnect(IConnection::ConnectionId)
     m_serverConnectionId = IConnection::InvalidConnectionId;
 }
 
-void GameController::_onViewMsgReceived(IConnection::ConnectionId id, const IConnection::Msg& msg)
+void GameController::_onViewMsgReceived(IConnection::ConnectionId,
+                                        const IConnection::Msg& msg)
 {
+    m_clientGame.OnMsgReceived(msg);
 }
 
-void GameController::_onServerMsgReceived(IConnection::ConnectionId id, const IConnection::Msg& msg)
+void GameController::_onServerMsgReceived(IConnection::ConnectionId,
+                                          const IConnection::Msg& msg)
 {
+    m_clientGame.OnMsgReceived(msg);
 }
 
-void GameController::_sendToView(IConnection::Msg& msg)
+void GameController::_sendToView(const IConnection::Msg& msg)
 {
     if(m_viewConnection != nullptr && m_viewConnectionId != -1)
     {
@@ -147,7 +161,7 @@ void GameController::_sendToView(IConnection::Msg& msg)
     }
 }
 
-void GameController::_sendToServer(IConnection::Msg& msg)
+void GameController::_sendToServer(const IConnection::Msg& msg)
 {
     if(m_serverConnection != nullptr && m_serverConnectionId != -1)
     {

@@ -28,7 +28,6 @@ bool View::Init(const Arguments&)
 
         m_controllerConnection->Init(ctx);
 
-        // Maybe add retry mechanism ?
         if(m_controllerConnection->Run() == false)
         {
             m_lastConnectionRetry = std::chrono::steady_clock::now();
@@ -36,6 +35,13 @@ bool View::Init(const Arguments&)
             result = false;
         }
     }
+    //
+    auto controllerSender = [this](const IConnection::Msg& msg)
+    {
+        _sendMsgToController(msg);
+    };
+    m_presentation.Init(controllerSender);
+
     return result;
 }
 
@@ -54,6 +60,7 @@ void View::Update()
             m_controllerConnection->Run();
         }
     }
+    m_presentation.Update();
 }
 
 void View::_onControllerConnect(IConnection::ConnectionId id)
@@ -66,14 +73,14 @@ void View::_onControllerDisconnect(IConnection::ConnectionId id)
     m_controllerConnectionId = IConnection::InvalidConnectionId;
 }
 
-void View::_onControllerMsgReceived(IConnection::ConnectionId id, const IConnection::Msg& msg)
+void View::_onControllerMsgReceived(IConnection::ConnectionId, const IConnection::Msg& msg)
 {
 }
 
-void View::_sendMsgToController(IConnection::ConnectionId id, const IConnection::Msg& msg)
+void View::_sendMsgToController(const IConnection::Msg& msg)
 {
-    if(m_controllerConnection != nullptr)
+    if(m_controllerConnectionId != IConnection::InvalidConnectionId)
     {
-        m_controllerConnection->SendMsg(id, msg);
+        m_controllerConnection->SendMsg(m_controllerConnectionId, msg);
     }
 }

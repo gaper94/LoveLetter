@@ -42,6 +42,8 @@ add_executable(game_controller App/Application.h
 add_executable(view App/Application.h
                               View/View.h
                               View/View.cpp
+                              View/Presentation.h
+                              View/Presentation.cpp
                               View/main.cpp)
 
 add_executable(game_server App/Application.h

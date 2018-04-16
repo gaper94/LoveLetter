@@ -3,7 +3,12 @@
 #include <algorithm>
 #include <iostream>
 
-void Deck::InitDeck()
+Deck::Deck()
+{
+    _initDeck();
+}
+
+void Deck::_initDeck()
 {
     m_deck.clear();
     m_deck.insert(m_deck.begin(), 5, {CardType::Guard, 1});   // begin() 5x iteration avec une carte de type Guard
