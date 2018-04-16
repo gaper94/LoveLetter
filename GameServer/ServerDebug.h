@@ -6,7 +6,9 @@
 #define SRV_DEBUG
 
 #ifdef SRV_DEBUG
-#define LOG(msg) std::cout << msg
+
+#define LOG(msg) std::cout << msg << std::endl
+
 #else
 #define LOG(msg)
 #endif

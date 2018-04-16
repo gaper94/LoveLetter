@@ -28,7 +28,8 @@ add_library(Serialize SHARED    Msg/Deserializer.h
 
 add_library(GameCommon SHARED  GameCommon/GameDefinitions.h
                                GameCommon/GameUtils.h
-                               GameCommon/GameUtils.cpp)
+                               GameCommon/GameUtils.cpp
+                               GameCommon/TypesSerializers.cpp)
 
 add_library(ToIntegrate STATIC  to_be_integrated/Joueur.h
                                 to_be_integrated/Joueur.cpp

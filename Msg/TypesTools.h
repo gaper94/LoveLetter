@@ -31,6 +31,7 @@ namespace TypesTools
     void WriteString(const char* str, Storage& buffer);
     void WriteString(const std::string& str, Storage& buffer);
 
+    void WriteVector(uint16_t numberOfElements, Storage& buffer);
     void WriteMap(uint16_t numberOfElements, Storage& buffer);
 
     //
@@ -53,6 +54,7 @@ namespace TypesTools
 
     StreamPos ReadString(std::string& value, Storage& buffer, StreamPos currentPos);
 
+    StreamPos ReadVector(uint16_t& numberOfElements, Storage& buffer, StreamPos currentPos);
     StreamPos ReadMap(uint16_t& numberOfElements, Storage& buffer, StreamPos currentPos);
 }
 

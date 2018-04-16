@@ -6,6 +6,21 @@
 #include <memory>
 #include <algorithm>
 
+void ServerGame::Init(MsgSender msgSender)
+{
+    m_msgSender = msgSender;
+}
+
+void ServerGame::StartGame()
+{
+    m_gameState = GameState::InProcess;
+    _startGame();
+}
+
+void ServerGame::ForceStopGame()
+{
+}
+
 void ServerGame::InitPlayers(const Msg& msg)
 {
     if(msg.name != "players_config")
@@ -44,14 +59,9 @@ bool ServerGame::CanStartGame()
     return true;
 }
 
-void ServerGame::StartGame()
+void ServerGame::Update()
 {
-    m_gameState = GameState::InProcess;
-    _startGame();
-}
 
-void ServerGame::ForceStopGame()
-{
 }
 
 void ServerGame::_startGame()
@@ -82,131 +92,130 @@ void ServerGame::_startGame()
 void ServerGame::_playRound(const Deck& _deck)
 {
     Deck deck = _deck;
-    Card discard;
     Card c;
     bool playerExist;
     m_defausse = deck.PickCard();
     _printDefausse();
 
+    // When game is with two players, remove some cards
+    std::vector<Card> discartedCards;
     if(_playersAlive() == 2)
     {
-        std::cout << "DISCARTED CARDS"<< std::endl;
-        discard = deck.PickCard();
-        std::cout << Utils::CardTypeToString(discard.type) << std::endl;
-        discard = deck.PickCard();
-        std::cout << Utils::CardTypeToString(discard.type) << std::endl;
-        discard = deck.PickCard();
-        std::cout << Utils::CardTypeToString(discard.type) << std::endl;
-        std::cout << "================" << std::endl;
+        for(size_t i = 0; i < 3; i++)
+        {
+            auto discartedCard = deck.PickCard();
+            discartedCards.push_back(discartedCard);
+            std::string logMsg = "Discarted card ";
+            logMsg += Utils::CardTypeToString(discartedCard.type);
+            LOG(logMsg);
+        }
     }
+    Msg msg;
+    msg.name = "discarted_cards";
+    msg.AddValue("cards", discartedCards);
+    _sendMsg(msg);
 
-    //EVERYONE RECIEVE ONE CARD //GAME RULE3
+    // First deal one card for every player
     for(int i = 0; i <m_numberOfPlayers; i++)
     {
         auto pickedCard1 = deck.PickCard();
         m_players.at(i)->AddCard(pickedCard1);
-        m_players.at(i)->PrintName();
-        m_players.at(i)->PrintHand();
     }
-
-
 
     while(deck.SizeDeck() > 0)
     {
-        //CHECK MORE THAN  PLAYER AVAILABLE
-       if( _playersAlive() <= 1)
-       {
+        if( _playersAlive() <= 1)
+        {
            break;
-       }
+        }
 
         for(int i =0  ; i <m_numberOfPlayers; i++)
         {
             if(m_players.at(i)->isDead == false)
             {
-            //GameRULE protection last only 1 tour
-            if(m_players.at(i)->GetPlayerProtection() == true)
-            {
-                std::cout<< "No longer protected" <<std::endl;
-                m_players.at(i)->RemovePlayerProtection();
-            }
+                // Protection last only 1 tour
+                if(m_players.at(i)->GetPlayerProtection() == true)
+                {
+                    std::cout<< "No longer protected" <<std::endl;
+                    m_players.at(i)->RemovePlayerProtection();
+                }
 
-            m_players.at(i)->PrintName();
-            Card inHand = m_players.at(i)->TakeCardTop();
-            Card pick = deck.PickCard();
-            if(Utils::CardTypeToString(pick.type) == "Countess" && (Utils::CardTypeToString(inHand.type) =="Prince" || Utils::CardTypeToString(inHand.type)=="King"))
-            {
-                m_players.at(i)->AddCard(pick);
-                std::cout << "Your cards " << std::endl;
-                m_players.at(i)->PrintHand();
-                std::cout <<"You have no choice" << std::endl;
-                m_players.at(i)->PlayACard(pick);
-            }
-            else
-            {
-                if (Utils::CardTypeToString(inHand.type) == "Countess" && (Utils::CardTypeToString(pick.type) =="Prince" || Utils::CardTypeToString(pick.type)=="King"))
+                m_players.at(i)->PrintName();
+                Card inHand = m_players.at(i)->TakeCardTop();
+                Card pick = deck.PickCard();
+                if(Utils::CardTypeToString(pick.type) == "Countess" && (Utils::CardTypeToString(inHand.type) =="Prince" || Utils::CardTypeToString(inHand.type)=="King"))
                 {
                     m_players.at(i)->AddCard(pick);
                     std::cout << "Your cards " << std::endl;
                     m_players.at(i)->PrintHand();
                     std::cout <<"You have no choice" << std::endl;
-                    m_players.at(i)->PlayACard(inHand);
+                    m_players.at(i)->PlayACard(pick);
                 }
                 else
                 {
-                    m_players.at(i)->AddCard(pick);
-                    std::cout << "Your cards " << std::endl;
-                    m_players.at(i)->PrintHand();
-
-                    do
+                    if (Utils::CardTypeToString(inHand.type) == "Countess" && (Utils::CardTypeToString(pick.type) =="Prince" || Utils::CardTypeToString(pick.type)=="King"))
                     {
-                        c = m_players.at(i)->ChoisirCarte();
-                        m_playedCards.at(i).cards.push_back(c);
-                        /*std::cout << "which one do u want to play:  ";
-                        std::string userChoice;
-                        getline(std::cin, userChoice); //respect Case letters
-                        c = vectorPlayers.at(i)->TakeCardByName(userChoice);*/
-                        playerExist = m_players.at(i)->PlayACard(c);
-                    } while( playerExist == false);
-                    _cardEffectCheck(c, deck, m_players.at(i) ,i);
-                    std::cout << "========= Cartes deja jouees ==========" <<std::endl;
-                    for (unsigned int k = 0; k< m_playedCards.at(i).cards.size(); k++)
-                    {
-                        std::string s = Utils::CardTypeToString(m_playedCards.at(i).cards.at(k).type);
-                        std::cout << s << std::endl;
+                        m_players.at(i)->AddCard(pick);
+                        std::cout << "Your cards " << std::endl;
+                        m_players.at(i)->PrintHand();
+                        std::cout <<"You have no choice" << std::endl;
+                        m_players.at(i)->PlayACard(inHand);
                     }
-                    std::cout << "=======================================" <<std::endl;
-                }
-            }
+                    else
+                    {
+                        m_players.at(i)->AddCard(pick);
+                        std::cout << "Your cards " << std::endl;
+                        m_players.at(i)->PrintHand();
 
-            if( _playersAlive() <= 1)//check if more than 1 player if not exit
+                        do
+                        {
+                            c = m_players.at(i)->ChoisirCarte();
+                            m_playedCards.at(i).cards.push_back(c);
+                            playerExist = m_players.at(i)->PlayACard(c);
+                        } while( playerExist == false);
+
+                        _cardEffectCheck(c, deck, m_players.at(i) ,i);
+                        std::cout << "========= Cartes deja jouees ==========" <<std::endl;
+                        for (unsigned int k = 0; k< m_playedCards.at(i).cards.size(); k++)
+                        {
+                            std::string s = Utils::CardTypeToString(m_playedCards.at(i).cards.at(k).type);
+                            std::cout << s << std::endl;
+                        }
+                        std::cout << "=======================================" <<std::endl;
+                    }
+                }
+
+                if( _playersAlive() <= 1)//check if more than 1 player if not exit
+                {
+                    break;
+                }
+                std::cout <<"" <<std::endl;
+                std::cout << "===============================" <<std::endl;
+            }
+            if (deck.SizeDeck() == 0)
             {
                 break;
             }
-            std::cout <<"" <<std::endl;
-            std::cout << "===============================" <<std::endl;
-            }
-            if (deck.SizeDeck() == 0)
-            {break;}
         }
     }
 
     if (_playersAlive() <= 1)
     {
-        for(unsigned int i = 0 ; i < m_players.size() ; i++ )
+        for(auto player : m_players)
         {
-
-            if(m_players.at(i)->isDead == false)
+            if(player->isDead == false)
             {
-                m_players.at(i)->WinAPoint();
+                player->WinAPoint();
                 std::cout << "The winner of this round is : " << std::endl;
-                m_players.at(i)->PrintName();
-                std::cout <<m_players.at(i)->GetNumberOfPoints() << " point(s)" << std::endl;
+                player->PrintName();
+                std::cout << player->GetNumberOfPoints() << " point(s)" << std::endl;
             }
         }
     }
-    else//PlayerAlive > 1
+    // When more than one player is alive, find the one with the highest strength
+    else
     {
-        int winner=0;
+        int winner = 0;
         Card win;
         win.type = CardType::None;
         for(unsigned int i = 0 ; i < m_players.size() ; i++ )
@@ -361,10 +370,13 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
 {
     bool present = false;
     std::string input;
+
+    // When it's priest try guess on of opponents card
     if( Utils::CardTypeToString(c.type) == "Guard")
     {
         if(_allProtected(player))
-        {}
+        {
+        }
         else
         {
             do
@@ -398,6 +410,7 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
         }
     }
 
+    // When princess is player, player dies automatically
     if ( Utils::CardTypeToString(c.type) == "Princess" )
     {
         std::cout << "You lose"  <<std::endl ;
@@ -405,11 +418,14 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
         std::cout << _playersAlive() <<std::endl;
     }
 
-
+    // When Baron is played, player chooses oponent and compares their cards
+    // the one with lower strength, dies
     if( Utils::CardTypeToString(c.type) == "Baron" )
     {
         if(_allProtected(player))
-        {}
+        {
+
+        }
         else
         {
             do
@@ -430,7 +446,7 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
                         Card myCard =  m_players.at(pos)->TakeCardTop();
                         std::cout << Utils::CardTypeToString(myCard.type) << std::endl;
 
-                        if( otherCard.type > myCard.type)//my caard is lower
+                        if( otherCard.type > myCard.type)//my card is lower
                         {
                             std::cout << "You lose" <<std::endl ;
                             m_players.at(pos)->isDead = true;
@@ -466,9 +482,13 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
                 Card newcard;
                 m_players.at(pos)->PlayACard(discard);
                 if (deck.SizeDeck() == 0)
+                {
                     newcard = m_defausse;
+                }
                 else
+                {
                     newcard = deck.PickCard();
+                }
                 m_players.at(pos)->AddCard(newcard);
             }
         }
@@ -565,4 +585,12 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
 void ServerGame::_printDefausse()
 {
     std::cout << Utils::CardTypeToString(m_defausse.type) << std::endl;
+}
+
+void ServerGame::_sendMsg(const IConnection::Msg& msg)
+{
+    if(m_msgSender != nullptr)
+    {
+        m_msgSender(msg);
+    }
 }

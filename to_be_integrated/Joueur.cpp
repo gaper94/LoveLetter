@@ -96,11 +96,11 @@ bool Joueur::PlayACard(Card& c)
     Card first = playerDeck.front();
 	if (c.type == toPlay.type)
 	{
-        std::cout << Utils::CardTypeToString(toPlay.type) << std::endl; //print  it
-		playerDeck.pop_back();	
-		return true;			   					 // remove it from the deck
+        std::cout << Utils::CardTypeToString(toPlay.type) << std::endl;
+        playerDeck.pop_back();
+        return true;
 	}
-	else // inverse cards then pop back
+    else
 	{
 		if (c.type == first.type)
 		{
@@ -122,6 +122,7 @@ bool Joueur::PlayACard(Card& c)
 			return true;
 		}
 	}
+    return false;
 }
 
 Card Joueur::ChoisirCarte()

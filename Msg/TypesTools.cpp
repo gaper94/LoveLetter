@@ -183,6 +183,21 @@ void WriteString(const std::string& str, Storage& buffer)
     WriteString(str.c_str(), buffer);
 }
 
+void WriteVector(uint16_t numberOfElements, Storage& buffer)
+{
+    Storage temp;
+    SizeType FieldSize = 0;
+    auto bufferSize = SizeFieldLength + TypeFieldLength + FieldSize + NumberOfElementsFieldLength;
+    temp.resize(bufferSize);
+    uint8_t FieldType = static_cast<uint8_t>(FieldTypes::Array);
+    StreamPos currentPos = 0;
+    currentPos = WriteRaw(FieldSize, temp, currentPos);
+    currentPos = WriteRaw(FieldType, temp, currentPos);
+    currentPos = WriteRaw(numberOfElements, temp, currentPos);
+    //
+    buffer.insert(buffer.end(), temp.begin(), temp.end());
+}
+
 void WriteMap(uint16_t numberOfElements, Storage& buffer)
 {
     Storage temp;
@@ -302,6 +317,24 @@ StreamPos ReadString(std::string& value, Storage& buffer, StreamPos currentPos)
 
     tempPos = ReadRaw(temp.data(), FieldSize, buffer, tempPos);
     value = temp.data();
+    return tempPos;
+}
+
+StreamPos ReadVector(uint16_t& numberOfElements, Storage& buffer, StreamPos currentPos)
+{
+    SizeType FieldSize{};
+    StreamPos tempPos = currentPos;
+    uint8_t FieldType = static_cast<uint8_t>(FieldTypes::Invalid);
+    tempPos = ReadRaw(FieldSize, buffer, tempPos);
+    tempPos = ReadRaw(FieldType, buffer, tempPos);
+
+    if(FieldType != static_cast<uint8_t>(FieldTypes::Array))
+    {
+        return currentPos;
+    }
+
+    numberOfElements = 0;
+    tempPos = ReadRaw(numberOfElements, buffer, tempPos);
     return tempPos;
 }
 

@@ -61,6 +61,15 @@ bool GameServer::Init(const Arguments& args)
         result = false;
     }
     //
+    auto broadcastSender = [this](const IConnection::Msg& msg)
+    {
+        for(auto connectionId : m_activeConnections)
+        {
+            _sendMsgToGameController(connectionId, msg);
+        }
+    };
+    m_serverGame.Init(broadcastSender);
+    //
     return result;
 }
 

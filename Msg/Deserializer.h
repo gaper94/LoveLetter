@@ -43,6 +43,21 @@ public:
         return is;
     }
 
+    template<typename Value>
+    friend Deserializer& operator>>(Deserializer& is, std::vector<Value>& data)
+    {
+        uint16_t numberOfElements = uint32_t();
+        is.m_currentPos = TypesTools::ReadVector(numberOfElements, is.m_buffer, is.m_currentPos);
+        data.clear();
+        for(uint32_t i = 0; i < numberOfElements; i++)
+        {
+            Value v;
+            is >> v;
+            data.push_back(v);
+        }
+        return is;
+    }
+
 private:
     TypesTools::Storage m_buffer;
     TypesTools::StreamPos m_currentPos{};

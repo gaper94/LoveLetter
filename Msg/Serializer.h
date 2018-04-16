@@ -39,6 +39,17 @@ public:
         return os;
     }
 
+    template<typename Value>
+    friend Serializer& operator<<(Serializer& os, const std::vector<Value>& data)
+    {
+        TypesTools::WriteVector(data.size(), os.m_buffer);
+        for(const auto& elem : data)
+        {
+            os << elem;
+        }
+        return os;
+    }
+
     const TypesTools::Storage& GetBuffer() const;
     void SetBuffer(const TypesTools::Storage& buff);
     void Clear();
