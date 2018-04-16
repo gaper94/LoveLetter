@@ -1,6 +1,6 @@
 #include "../Msg/Serializer.h"
 #include "../Msg/Deserializer.h"
-#include "../to_be_integrated/Card.h"
+#include "../GameCommon/Card.h"
 
 template<>
 Serializer& operator<<(Serializer& os, const Card& data)

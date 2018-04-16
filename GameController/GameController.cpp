@@ -94,8 +94,6 @@ bool GameController::Init(const Arguments& args)
         }
     }
 
-    m_lastSend = std::chrono::steady_clock::now();
-
     return result;
 }
 
@@ -105,14 +103,6 @@ void GameController::Update()
     if(m_serverConnection != nullptr)
     {
         m_serverConnection->Update();
-        auto now = std::chrono::steady_clock::now();
-        if(now - m_lastSend > std::chrono::seconds(3))
-        {
-            IConnection::Msg msg;
-            msg.name = "connection";
-            _sendToServer(msg);
-            m_lastSend = now;
-        }
     }
     //
     if(m_viewConnection != nullptr)
@@ -147,13 +137,6 @@ void GameController::_onViewMsgReceived(IConnection::ConnectionId id, const ICon
 
 void GameController::_onServerMsgReceived(IConnection::ConnectionId id, const IConnection::Msg& msg)
 {
-    std::cout << "Received " << msg.name << std::endl;
-    if(msg.HasValue("con_id") == true)
-    {
-        int con_id;
-        msg.GetValue("con_id", con_id);
-        std::cout << "My id is " << con_id << std::endl;
-    }
 }
 
 void GameController::_sendToView(IConnection::Msg& msg)

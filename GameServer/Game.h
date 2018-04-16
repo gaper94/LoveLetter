@@ -4,9 +4,9 @@
 #include <vector>
 #include <functional>
 #include "../Network/IConnection.h"
-#include "../to_be_integrated/Joueur.h"
-#include "../to_be_integrated/Bot_Random.h"
-#include "../to_be_integrated/Deck.h"
+#include "Joueur.h"
+#include "Bot_Random.h"
+#include "Deck.h"
 
 class ServerGame
 {

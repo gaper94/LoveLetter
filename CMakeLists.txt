@@ -29,19 +29,14 @@ add_library(Serialize SHARED    Msg/Deserializer.h
 add_library(GameCommon SHARED  GameCommon/GameDefinitions.h
                                GameCommon/GameUtils.h
                                GameCommon/GameUtils.cpp
-                               GameCommon/TypesSerializers.cpp)
-
-add_library(ToIntegrate STATIC  to_be_integrated/Joueur.h
-                                to_be_integrated/Joueur.cpp
-                                to_be_integrated/Deck.h
-                                to_be_integrated/Deck.cpp
-                                to_be_integrated/Card.h
-                                to_be_integrated/Bot_Random.h
-                                to_be_integrated/Bot_Random.cpp)
+                               GameCommon/TypesSerializers.cpp
+                               GameCommon/Card.h)
 
 add_executable(game_controller App/Application.h
                                GameController/GameController.h
                                GameController/GameController.cpp
+                               GameController/Game.h
+                               GameController/Game.cpp
                                GameController/main.cpp )
 
 add_executable(view App/Application.h
@@ -55,8 +50,14 @@ add_executable(game_server App/Application.h
                            GameServer/GameServer.cpp
                            GameServer/Game.h
                            GameServer/Game.cpp
+                           GameServer/Joueur.h
+                           GameServer/Joueur.cpp
+                           GameServer/Bot_Random.h
+                           GameServer/Bot_Random.cpp
+                           GameServer/Deck.h
+                           GameServer/Deck.cpp
                            GameServer/main.cpp)
 
 target_link_libraries(game_controller Network Serialize GameCommon)
-target_link_libraries(view Network Serialize)
-target_link_libraries(game_server Network Serialize GameCommon ToIntegrate)
+target_link_libraries(view Network Serialize GameCommon)
+target_link_libraries(game_server Network Serialize GameCommon)

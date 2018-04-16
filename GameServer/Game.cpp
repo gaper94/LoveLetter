@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "../to_be_integrated/Bot_Random.h"
 #include <iostream>
 #include "../GameCommon/GameUtils.h"
 #include "ServerDebug.h"
@@ -110,6 +109,7 @@ void ServerGame::_playRound(const Deck& _deck)
             LOG(logMsg);
         }
     }
+    //
     Msg msg;
     msg.name = "discarted_cards";
     msg.AddValue("cards", discartedCards);
