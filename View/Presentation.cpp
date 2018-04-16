@@ -19,7 +19,13 @@ void ViewPresentation::OnMsgReceived(const Msg& msg)
         Msg response;
         response.name = "input_response";
         response.AddValue("input", input);
-        _sendMsgToController(msg);
+        _sendMsgToController(response);
+    }
+    else if(msg.name == "info_message")
+    {
+        std::string infoMsg;
+        msg.GetValue("info_msg", infoMsg);
+        std::cout << infoMsg;
     }
 }
 

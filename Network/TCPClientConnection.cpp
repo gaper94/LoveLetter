@@ -123,7 +123,7 @@ void TCPClientConnection::Update()
     {
         auto bytesToReceive = m_msgSize;
         uint32_t currentPos = 0;
-        auto receivedItems = read(m_fd, m_rawMsg.data() + currentPos, m_msgSize);
+        auto receivedItems = read(m_fd, m_rawMsg.data() + currentPos, bytesToReceive);
         if(receivedItems > 0)
         {
             bytesToReceive -= receivedItems;

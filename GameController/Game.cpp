@@ -27,8 +27,51 @@ void ClientGame::OnMsgReceived(const Msg& msg)
     }
     else if(msg.name == "input_response")
     {
-        _sendMsgToServer(msg);
+        if(m_eState != State::WaitingForCredentials)
+        {
+            _sendMsgToServer(msg);
+        }
+        else
+        {
+            msg.GetValue("input", m_playerName);
+            _sendInitPlayersMsg();
+            _startGame();
+        }
     }
+}
+
+void ClientGame::RequestCredentials()
+{
+    Msg msg;
+    msg.name = "input_request";
+    std::string requestMsg = "Please, enter your name: ";
+    msg.AddValue("request_msg", requestMsg);
+    m_eState = State::WaitingForCredentials;
+    _sendMsgToView(msg);
+}
+
+void ClientGame::_sendInitPlayersMsg()
+{
+    if(m_playerName.empty() ==  true)
+    {
+        RequestCredentials();
+        return;
+    }
+    //
+    Msg msg;
+    msg.name = "players_config";
+
+    int32_t numberOfPlayers = 4;
+    msg.AddValue("number_of_players", numberOfPlayers);
+    msg.AddValue("player_name", m_playerName);
+    _sendMsgToServer(msg);
+}
+
+void ClientGame::_startGame()
+{
+    Msg msg;
+    msg.name = "start_game";
+    _sendMsgToServer(msg);
 }
 
 void ClientGame::_sendMsgToServer(const Msg& msg)

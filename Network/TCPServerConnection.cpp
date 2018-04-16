@@ -176,7 +176,7 @@ public:
             uint32_t currentPos = bytesReceived;
             while(bytesToReceive > 0)
             {
-                bytesReceived = recv(fd, m_rawMsg.data() + currentPos, msgSize, 0);
+                bytesReceived = recv(fd, m_rawMsg.data() + currentPos, bytesToReceive, 0);
                 currentPos += bytesReceived;
                 bytesToReceive -= bytesReceived;
             }

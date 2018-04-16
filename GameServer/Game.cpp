@@ -310,25 +310,26 @@ void ServerGame::_addAIPlayers()
     }
 
     std::string playerName;
-    if(numberOfAIPlayers < 2)
+    if(numberOfAIPlayers > 0)
     {
         playerName = "BotAnne";
         m_players.push_back(std::make_shared<AIPlayer>(playerName));
         m_playedCards.push_back({m_players.back(), {}});
     }
     //
-    if(numberOfAIPlayers < 3)
+    if(numberOfAIPlayers > 1)
     {
         playerName = "BotGeorges";
         m_players.push_back(std::make_shared<AIPlayer>(playerName));
         m_playedCards.push_back({m_players.back(), {}});
     }
     //
-    if(numberOfAIPlayers < 4)
+    if(numberOfAIPlayers > 2)
     {
         playerName = "BotMaria";
         m_players.push_back(std::make_shared<AIPlayer>(playerName));
-        m_playedCards.push_back({m_players.back(), {}});
+        std::vector<Card> cards;
+        m_playedCards.push_back({m_players.back(), cards});
     }
 }
 

@@ -98,6 +98,8 @@ void GameServer::_onGameControllerMsgReceived(IConnection::ConnectionId id,
     if(msg.name == "players_config")
     {
         m_serverGame.InitPlayers(msg);
+        int a =1;
+        a++;
     }
     else if(msg.name == "start_game")
     {

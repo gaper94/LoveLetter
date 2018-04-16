@@ -124,6 +124,7 @@ void GameController::Update()
 void GameController::_onViewConnect(IConnection::ConnectionId id)
 {
     m_viewConnectionId = id;
+    m_clientGame.RequestCredentials();
 }
 
 void GameController::_onServerConnect(IConnection::ConnectionId id)

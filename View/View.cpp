@@ -75,6 +75,7 @@ void View::_onControllerDisconnect(IConnection::ConnectionId id)
 
 void View::_onControllerMsgReceived(IConnection::ConnectionId, const IConnection::Msg& msg)
 {
+    m_presentation.OnMsgReceived(msg);
 }
 
 void View::_sendMsgToController(const IConnection::Msg& msg)
