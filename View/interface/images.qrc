@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ressources/button.png</file>
+        <file>ressources/bgrd.jpg</file>
+        <file>ressources/window_background.jpg</file>
+        <file>ressources/page1.jpg</file>
+        <file>ressources/cards/back_card.png</file>
+        <file>ressources/cards/baron.png</file>
+        <file>ressources/cards/countess.png</file>
+        <file>ressources/cards/guard.png</file>
+        <file>ressources/cards/handmaid.png</file>
+        <file>ressources/cards/king.png</file>
+        <file>ressources/cards/priest.png</file>
+        <file>ressources/cards/prince.png</file>
+        <file>ressources/cards/princess.png</file>
+        <file>ressources/cards/resized/back_card.png</file>
+        <file>ressources/cards/resized/baron.png</file>
+        <file>ressources/cards/resized/countess.png</file>
+        <file>ressources/cards/resized/guard.png</file>
+        <file>ressources/cards/resized/handmaid.png</file>
+        <file>ressources/cards/resized/king.png</file>
+        <file>ressources/cards/resized/priest.png</file>
+        <file>ressources/cards/resized/prince.png</file>
+        <file>ressources/cards/resized/princess.png</file>
+        <file>ressources/info.png</file>
+        <file>ressources/game_icon.png</file>
+        <file>ressources/english.png</file>
+        <file>ressources/francais.png</file>
+    </qresource>
+</RCC>
