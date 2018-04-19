@@ -49,6 +49,10 @@ add_executable(game_server App/Application.h
                            GameServer/Joueur.cpp
                            GameServer/Bot_Random.h
                            GameServer/Bot_Random.cpp
+                           GameServer/InfSup_Bot.h
+                           GameServer/InfSup_Bot.cpp
+                           GameServer/Terminator.h
+                           GameServer/Terminator.cpp
                            GameServer/Deck.h
                            GameServer/Deck.cpp
                            GameServer/main.cpp)

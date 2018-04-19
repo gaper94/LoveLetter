@@ -62,4 +62,40 @@ CardType CardTypeFromString(const std::string& cardType)
     }
 }
 
+int GetCardValue(CardType cardType)
+{
+    switch(cardType)
+    {
+        case CardType::None:       return 0;
+        case CardType::Guard:      return 1;
+        case CardType::Priest:     return 2;
+        case CardType::Baron:      return 3;
+        case CardType::Handmaiden: return 4;
+        case CardType::Prince:     return 5;
+        case CardType::King:       return 6;
+        case CardType::Countess:   return 7;
+        case CardType::Princess:   return 8;
+        default:                   return 0;
+    }
+    return 0;
+}
+
+int GetNumbCard(CardType cardType)
+{
+    switch(cardType)
+    {
+        case CardType::None:       return 0;
+        case CardType::Guard:      return 5;
+        case CardType::Priest:     return 2;
+        case CardType::Baron:      return 2;
+        case CardType::Handmaiden: return 2;
+        case CardType::Prince:     return 2;
+        case CardType::King:       return 1;
+        case CardType::Countess:   return 1;
+        case CardType::Princess:   return 1;
+        default:                   return 0;
+    }
+    return 0;
+}
+
 }
