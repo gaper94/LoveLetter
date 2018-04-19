@@ -18,6 +18,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void OnControllerConnect();
+    void OnControllerDisconnect();
+    void SetMsgSender(MsgSender msgSender);
+
 private slots:
     void on_playButton_clicked();
 
@@ -29,6 +33,7 @@ private:
     Ui::MainWindow *ui;
     PlayerNumber *window = nullptr;
     Information *rulesWindow = nullptr;
+    MsgSender m_msgSender = nullptr;
 };
 
 #endif // MAINWINDOW_H

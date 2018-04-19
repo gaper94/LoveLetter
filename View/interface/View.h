@@ -2,14 +2,14 @@
 #define VIEW_H
 
 #include <chrono>
-#include "../App/Application.h"
-#include "../Network/IConnection.h"
+#include "../../App/Application.h"
+#include "../../Network/IConnection.h"
 #include "Presentation.h"
 
 class View : public Application
 {
 public:
-
+    View(int argc, char** argv);
     bool Init(const Arguments& args) final;
     void Update() final;
 private:

@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap english_icon(":/ressources/english.png");
     languageButton->setIcon(english_icon);
     languageButton->setIconSize(QSize(75, 75));
+
+    window = new PlayerNumber(this);
+    rulesWindow = new Information(this);
 }
 
 MainWindow::~MainWindow()
@@ -34,24 +37,47 @@ MainWindow::~MainWindow()
     }
 }
 
+void MainWindow::OnControllerConnect()
+{
+    if(window != nullptr)
+    {
+        window->OnControllerConnect();
+    }
+}
+
+void MainWindow::OnControllerDisconnect()
+{
+    if(window != nullptr)
+    {
+        window->OnControllerDisconnect();
+    }
+}
+
+void MainWindow::SetMsgSender(MsgSender msgSender)
+{
+    m_msgSender = msgSender;
+    if(window != nullptr)
+    {
+        window->SetMsgSender(msgSender);
+    }
+}
+
 void MainWindow::on_playButton_clicked()
 {
     hide();
-    if(window == nullptr)
+    if(window != nullptr)
     {
-        window = new PlayerNumber(this);
+        window->show();
     }
-    window->show();
 }
 
 
 void MainWindow::on_infoButton_clicked()
 {
-    if(rulesWindow == nullptr)
+    if(rulesWindow != nullptr)
     {
-        rulesWindow = new Information(this);
+        rulesWindow->show();
     }
-    rulesWindow->show();
 }
 
 

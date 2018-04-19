@@ -45,6 +45,33 @@ PlayerNumber::~PlayerNumber()
 
 int nb_players;
 
+void PlayerNumber::OnControllerConnect()
+{
+    m_controllerConnected = true;
+    if(windowComputer != nullptr)
+    {
+        windowComputer->OnControllerConnect();
+    }
+}
+
+void PlayerNumber::OnControllerDisconnect()
+{
+    m_controllerConnected = false;
+    if(windowComputer != nullptr)
+    {
+        windowComputer->OnControllerConnect();
+    }
+}
+
+void PlayerNumber::SetMsgSender(MsgSender msgSender)
+{
+    m_msgSender = msgSender;
+    if(windowComputer != nullptr)
+    {
+        windowComputer->SetMsgSender(msgSender);
+    }
+}
+
 //2 Players
 void PlayerNumber::on_twoPlayersButton_toggled(bool checked)
 {
@@ -92,8 +119,11 @@ void PlayerNumber::on_computerButton_clicked()
     if ((ui->twoPlayersButton->isChecked()==true) || (ui->threePlayersButton->isChecked()==true) ||
             (ui->fourPlayersButton->isCheckable()==true))
     {
-        hide();
-        windowComputer->show();
+        if(m_controllerConnected == true)
+        {
+            hide();
+            windowComputer->show();
+        }
     }
 }
 

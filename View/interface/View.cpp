@@ -1,6 +1,11 @@
 #include "View.h"
-#include "../Network/Network.h"
-#include "../Network/NetworkDefines.h"
+#include "../../Network/Network.h"
+#include "../../Network/NetworkDefines.h"
+
+View::View(int argc, char** argv)
+    : m_presentation(argc, argv)
+{
+}
 
 bool View::Init(const Arguments&)
 {
@@ -14,11 +19,13 @@ bool View::Init(const Arguments&)
         ctx.onConnect = [this](IConnection::ConnectionId id)
         {
             _onControllerConnect(id);
+            m_presentation.OnControllerConnected();
         };
 
         ctx.onDisconnect = [this](IConnection::ConnectionId id)
         {
             _onControllerDisconnect(id);
+            m_presentation.OnControllerConnected();
         };
 
         ctx.onMsg = [this](IConnection::ConnectionId id, const IConnection::Msg& msg)
@@ -32,7 +39,7 @@ bool View::Init(const Arguments&)
         {
             m_lastConnectionRetry = std::chrono::steady_clock::now();
             m_controllerConnectionId = IConnection::InvalidConnectionId;
-            result = false;
+            result = true;
         }
     }
     //
@@ -40,6 +47,7 @@ bool View::Init(const Arguments&)
     {
         _sendMsgToController(msg);
     };
+    //
     m_presentation.Init(controllerSender);
 
     return result;
@@ -68,7 +76,7 @@ void View::_onControllerConnect(IConnection::ConnectionId id)
     m_controllerConnectionId = id;
 }
 
-void View::_onControllerDisconnect(IConnection::ConnectionId id)
+void View::_onControllerDisconnect(IConnection::ConnectionId)
 {
     m_controllerConnectionId = IConnection::InvalidConnectionId;
 }

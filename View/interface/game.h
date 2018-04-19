@@ -20,6 +20,8 @@ public:
     explicit Game(QWidget *parent = 0);
     ~Game();
 
+    void Update();
+
 private:
     QLabel *userLabel;
     Ui::Game *ui;

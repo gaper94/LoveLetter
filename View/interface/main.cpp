@@ -1,12 +1,21 @@
+#include "View.h"
 #include "mainwindow.h"
 #include <QApplication>
 
-int main(int argc, char *argv[])
+int main(int argc, char** argv)
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    View view(argc, argv);
+    if(view.Init({}) == false)
+    {
+        return 1;
+    }
 
-    return a.exec();
+    bool timeToQuit = false;
+    while(timeToQuit == false)
+    {
+        view.Update();
+    }
+
+    return 0;
 }
 

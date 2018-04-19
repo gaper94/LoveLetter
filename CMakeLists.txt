@@ -39,13 +39,6 @@ add_executable(game_controller App/Application.h
                                GameController/Game.cpp
                                GameController/main.cpp )
 
-add_executable(view App/Application.h
-                              View/View.h
-                              View/View.cpp
-                              View/Presentation.h
-                              View/Presentation.cpp
-                              View/main.cpp)
-
 add_executable(game_server App/Application.h
                            GameServer/ServerDebug.h
                            GameServer/GameServer.h
@@ -61,5 +54,4 @@ add_executable(game_server App/Application.h
                            GameServer/main.cpp)
 
 target_link_libraries(game_controller Network Serialize GameCommon)
-target_link_libraries(view Network Serialize GameCommon)
 target_link_libraries(game_server Network Serialize GameCommon)

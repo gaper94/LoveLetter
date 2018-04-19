@@ -2,8 +2,6 @@
 #include "card.h"
 #include "ui_game.h"
 
-
-
 Game::Game(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Game)
@@ -12,34 +10,7 @@ Game::Game(QWidget *parent) :
 
     userLabel = ui->userLabel;
 
-    //QString username =QString("BLABLA"); //Pour tester si marche
-
-    QString username = QString("%1").arg(name);
-    userLabel->setText(username);
-
-
-    //Score
-    int score_player1 = 1;
-    int score_player2 = 5;
-    int score_player3 = 4;
-    int score_player4 = 3;
-
-    if (nb_players == 2)
-    {
-        QString score = QString("SCORE:  %1: %2  Jack: %3").arg(name).arg(score_player1).arg(score_player2);
-        ui->scoreLabel->setText(score);
-    }
-    else if (nb_players == 3)
-    {
-        QString score = QString("SCORE:  %1: %2  Jack: %3  Alice: %4").arg(name).arg(score_player1).arg(score_player2).arg(score_player3);
-        ui->scoreLabel->setText(score);
-    }
-    else if (nb_players == 4)
-    {
-        QString score = QString("SCORE:  %1: %2  Jack: %3  Alice: %4  Tom: %5").arg(name).arg(score_player1).arg(score_player2).arg(score_player3).arg(score_player4);
-        ui->scoreLabel->setText(score);
-    }
-
+    Update();
 
     /*
     QPalette pal = userLabel->palette();
@@ -73,6 +44,34 @@ Game::Game(QWidget *parent) :
 Game::~Game()
 {
     delete ui;
+}
+
+void Game::Update()
+{
+    //Score
+    int score_player1 = 1;
+    int score_player2 = 5;
+    int score_player3 = 4;
+    int score_player4 = 3;
+
+    QString username = QString("%1").arg(name);
+    userLabel->setText(username);
+
+    if (nb_players == 2)
+    {
+        QString score = QString("SCORE:  %1: %2  Jack: %3").arg(name).arg(score_player1).arg(score_player2);
+        ui->scoreLabel->setText(score);
+    }
+    else if (nb_players == 3)
+    {
+        QString score = QString("SCORE:  %1: %2  Jack: %3  Alice: %4").arg(name).arg(score_player1).arg(score_player2).arg(score_player3);
+        ui->scoreLabel->setText(score);
+    }
+    else if (nb_players == 4)
+    {
+        QString score = QString("SCORE:  %1: %2  Jack: %3  Alice: %4  Tom: %5").arg(name).arg(score_player1).arg(score_player2).arg(score_player3).arg(score_player4);
+        ui->scoreLabel->setText(score);
+    }
 }
 
 //Function that sets the label n to a given card

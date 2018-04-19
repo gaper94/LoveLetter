@@ -21,6 +21,10 @@ public:
 
     QString game_mode;
 
+    void OnControllerConnect();
+    void OnControllerDisconnect();
+    void SetMsgSender(MsgSender msgSender);
+
 private slots:
     void on_startButton_clicked();
 
@@ -37,6 +41,10 @@ private:
     Game *windowGame;
     QLineEdit *textArea;
     QPushButton *startButton;
+    bool m_controllerConnected = false;
+    MsgSender m_msgSender = nullptr;
+    void _sendMsg(const Msg&);
+    void _sendInitMsg();
 };
 
 #endif // COMPUTER_H

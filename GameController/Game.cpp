@@ -24,19 +24,14 @@ void ClientGame::OnMsgReceived(const Msg& msg)
     else if(msg.name == "input_request")
     {
         _sendMsgToView(msg);
-    }
-    else if(msg.name == "input_response")
+    }    
+    else if(msg.name == "players_config")
     {
-        if(m_eState != State::WaitingForCredentials)
-        {
-            _sendMsgToServer(msg);
-        }
-        else
-        {
-            msg.GetValue("input", m_playerName);
-            _sendInitPlayersMsg();
-            _startGame();
-        }
+        _sendMsgToServer(msg);
+    }
+    else if(msg.name == "start_game")
+    {
+        _sendMsgToServer(msg);
     }
 }
 

@@ -41,6 +41,8 @@ Computer::Computer(QWidget *parent) :
     startButton = ui->startButton;
     startButton->setEnabled(false);
 
+    windowGame = new Game(this);
+
     connect(textArea, SIGNAL(textChanged(QString)), this, SLOT(TextChanged(QString)));
     //connect(startButton, SIGNAL(clicked()), this, SLOT(on_startButton_clicked()));
 
@@ -51,6 +53,21 @@ Computer::~Computer()
     delete ui;
 }
 
+void Computer::OnControllerConnect()
+{
+    m_controllerConnected = true;
+}
+
+void Computer::OnControllerDisconnect()
+{
+    m_controllerConnected = false;
+}
+
+void Computer::SetMsgSender(MsgSender msgSender)
+{
+    m_msgSender = msgSender;
+}
+
 void Computer::on_easyButton_toggled(bool checked)
 {
     if (checked == true)
@@ -59,7 +76,6 @@ void Computer::on_easyButton_toggled(bool checked)
         ui->mediumButton->setChecked(false);
         ui->hardButton->setChecked(false);
     }
-    else {}
 }
 
 void Computer::on_mediumButton_toggled(bool checked)
@@ -70,7 +86,6 @@ void Computer::on_mediumButton_toggled(bool checked)
         ui->easyButton->setChecked(false);
         ui->hardButton->setChecked(false);
     }
-    else {}
 }
 
 void Computer::on_hardButton_toggled(bool checked)
@@ -81,7 +96,6 @@ void Computer::on_hardButton_toggled(bool checked)
         ui->easyButton->setChecked(false);
         ui->mediumButton->setChecked(false);
     }
-    else {}
 }
 
 QString name;
@@ -92,11 +106,13 @@ void Computer::on_startButton_clicked()
     if ((ui->easyButton->isChecked()==true) || (ui->mediumButton->isChecked()==true)
             || (ui->hardButton->isChecked()==true))
     {
-        //TO TRY from Game: ui->userLabel->setText(name)
-        //PROBLEM: doesn't want to connect ui->userLabel even if #include "game.h" and ui in public
-        hide();
-        windowGame = new Game(this);
-        windowGame->show();
+        if(m_controllerConnected == true)
+        {
+            hide();
+            windowGame->Update();
+            windowGame->show();
+            _sendInitMsg();
+        }
     }
     else
     {
@@ -106,7 +122,35 @@ void Computer::on_startButton_clicked()
 
 void Computer::TextChanged(QString str)
 {
+    name = str;
     startButton->setEnabled(!str.isEmpty());
+}
+
+void Computer::_sendMsg(const Msg& msg)
+{
+    if(m_msgSender != nullptr)
+    {
+        m_msgSender(msg);
+    }
+}
+
+void Computer::_sendInitMsg()
+{
+    Msg msg;
+    msg.name = "players_config";
+    int32_t numberOfPlayers = nb_players;
+
+    msg.AddValue("number_of_players", numberOfPlayers);
+    std::string playerName = name.toStdString();
+    msg.AddValue("player_name", playerName);
+    std::string AIplayersMode = game_mode.toStdString();
+    msg.AddValue("ai_players_mode", AIplayersMode);
+
+    _sendMsg(msg);
+
+    Msg startMsg;
+    startMsg.name = "start_game";
+    _sendMsg(startMsg);
 }
 
 
