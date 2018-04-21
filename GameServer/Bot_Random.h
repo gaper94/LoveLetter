@@ -14,6 +14,7 @@ class BotRandom: public Joueur
     Card DevinerCarte();
     void DevinerRandom(Card c);
     std::string ChoisirJoueur(PlayersContainer& vectorPlayer , int nbPlayers);
+    virtual bool IsAIPlayer() { return true; }
 };
 
 #endif

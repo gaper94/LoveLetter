@@ -26,6 +26,7 @@ public:
 	int CartesRestantes(Card c);//methode pour compter les cartes et retourner le nombre des cartes c restantes
 	void DevinerInfSup(Card c);// afficher la carte devinée
 	std::vector<PlayedCards> playedCard;
+    virtual bool IsAIPlayer() { return true; }
 	bool firstRound = true;
 };
 

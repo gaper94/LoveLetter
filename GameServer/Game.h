@@ -22,6 +22,7 @@ public:
     {
         Waiting,
         InProcess,
+        WaitingForInput,
     };
 
     void Init(MsgSender msgSender);
@@ -30,15 +31,23 @@ public:
     void InitPlayers(const Msg& msg);
     bool CanStartGame();
     void Update();
+    void CardResponse(const Msg& msg);
 
 private:
     void _startGame();
-    void _playRound();
+    void _startRound();
+    void _updateRound();
+    void _finishRound();
+    //
+    void _requestCard();
     bool _checkForWinner();
+    bool _checkForRoundFinish();
+    void _sendWinner();
     PlayersContainer::iterator _getWinnerPos();
     PlayerPtr _getWinner();
     void _prepareForNextRound();
     void _addAIPlayers(const Msg& msg);
+    void _sendPlayedCard(const Card& c, std::string name);
     //
     void _updateViewCardsInfo();
     int  _playersAlive() const;
@@ -61,6 +70,9 @@ private:
     std::vector<PlayedCards> m_playedCards;
     GameState m_gameState = GameState::Waiting;
     MsgSender m_msgSender = nullptr;
+    bool m_gameIsRunning = false;
+    Deck m_deck;
+    size_t m_idxCurrentPlayer = 0;
 };
 
 #endif // GAME_H

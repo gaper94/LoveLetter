@@ -31,6 +31,7 @@ public:
     virtual Card ChoisirCarte();
     virtual Card DevinerCarte();
     virtual std::string ChoisirJoueur(PlayersContainer& vectorPlayer, int nbPlayers);
+    virtual bool IsAIPlayer() { return false; }
     bool isDead = false;
     std::vector<Card> playerDeck;
 public:    

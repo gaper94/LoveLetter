@@ -57,6 +57,8 @@ public:
 
 	void PrintPlayedCard();
 
+    virtual bool IsAIPlayer() { return true; }
+
 protected:
 
 	bool toGuard = false;
