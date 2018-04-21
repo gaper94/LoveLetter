@@ -38,14 +38,16 @@ private:
     PlayersContainer::iterator _getWinnerPos();
     PlayerPtr _getWinner();
     void _prepareForNextRound();
-    void _addAIPlayers();
+    void _addAIPlayers(const Msg& msg);
     //
+    void _updateViewCardsInfo();
     int  _playersAlive() const;
     int _getPlayerPosition(PlayerPtr player);
     bool _allProtected(PlayerPtr player);
     void _cardEffectCheck(const Card& c, Deck& deck, PlayerPtr player, int pos);
     void _printDefausse();
     void _sendMsg(const IConnection::Msg& msg);
+
 
     struct PlayedCards
     {

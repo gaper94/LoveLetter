@@ -1,9 +1,11 @@
 #include "Game.h"
 #include <iostream>
-#include "../GameCommon/GameUtils.h"
-#include "ServerDebug.h"
 #include <memory>
 #include <algorithm>
+#include <vector>
+#include "../GameCommon/GameUtils.h"
+#include "ServerDebug.h"
+#include "InfSup_Bot.h"
 
 void ServerGame::Init(MsgSender msgSender)
 {
@@ -46,7 +48,7 @@ void ServerGame::InitPlayers(const Msg& msg)
     m_players.push_back(std::make_shared<Player>(playerName));
     m_playedCards.push_back({m_players.back(), {}});
     //
-    _addAIPlayers();
+    _addAIPlayers(msg);
 }
 
 bool ServerGame::CanStartGame()
@@ -60,7 +62,6 @@ bool ServerGame::CanStartGame()
 
 void ServerGame::Update()
 {
-
 }
 
 void ServerGame::_startGame()
@@ -97,6 +98,7 @@ void ServerGame::_playRound()
         msg.AddValue("card", m_defausse);
         _sendMsg(msg);
     }
+
     // When game is with two players, remove some cards
     std::vector<Card> discartedCards;
     if(_playersAlive() == 2)
@@ -151,6 +153,7 @@ void ServerGame::_playRound()
                 if(Utils::CardTypeToString(pick.type) == "Countess" && (Utils::CardTypeToString(inHand.type) =="Prince" || Utils::CardTypeToString(inHand.type)=="King"))
                 {
                     m_players.at(i)->AddCard(pick);
+                    _updateViewCardsInfo();
                     std::cout << "Your cards " << std::endl;
                     m_players.at(i)->PrintHand();
                     std::cout <<"You have no choice" << std::endl;
@@ -161,6 +164,7 @@ void ServerGame::_playRound()
                     if (Utils::CardTypeToString(inHand.type) == "Countess" && (Utils::CardTypeToString(pick.type) =="Prince" || Utils::CardTypeToString(pick.type)=="King"))
                     {
                         m_players.at(i)->AddCard(pick);
+                        _updateViewCardsInfo();
                         std::cout << "Your cards " << std::endl;
                         m_players.at(i)->PrintHand();
                         std::cout <<"You have no choice" << std::endl;
@@ -171,6 +175,7 @@ void ServerGame::_playRound()
                         m_players.at(i)->AddCard(pick);
                         std::cout << "Your cards " << std::endl;
                         m_players.at(i)->PrintHand();
+                        _updateViewCardsInfo();
 
                         do
                         {
@@ -300,7 +305,23 @@ void ServerGame::_prepareForNextRound()
     }
 }
 
-void ServerGame::_addAIPlayers()
+ServerGame::PlayerPtr AIPlayersFactory(AIPlayerDifficulty difficulty, const std::string name)
+{
+    if(difficulty == AIPlayerDifficulty::Easy)
+    {
+        return std::make_shared<BotRandom>(name);
+    }
+    else if(difficulty == AIPlayerDifficulty::Medium)
+    {
+        return std::make_shared<InfSup_Bot>(name);
+    }
+    else // Terminators to be added
+    {
+        return std::make_shared<BotRandom>(name);
+    }
+}
+
+void ServerGame::_addAIPlayers(const Msg& msg)
 {
     int32_t numberOfAIPlayers = (m_numberOfPlayers - 1);
     if(numberOfAIPlayers < 1)
@@ -309,28 +330,44 @@ void ServerGame::_addAIPlayers()
         return;
     }
 
-    std::string playerName;
-    if(numberOfAIPlayers > 0)
+    std::vector<AIPlayerCfg> AIPlayers;
+    if(msg.GetValue("ai_players", AIPlayers) == false)
     {
-        playerName = "BotAnne";
-        m_players.push_back(std::make_shared<AIPlayer>(playerName));
-        m_playedCards.push_back({m_players.back(), {}});
+        // No AI players info in the message
+        return;
     }
-    //
-    if(numberOfAIPlayers > 1)
+
+    if(AIPlayers.empty() == true)
     {
-        playerName = "BotGeorges";
-        m_players.push_back(std::make_shared<AIPlayer>(playerName));
-        m_playedCards.push_back({m_players.back(), {}});
+        // No AI players to add
+        return;
     }
-    //
-    if(numberOfAIPlayers > 2)
+
+    for(auto& AIPlayer : AIPlayers)
     {
-        playerName = "BotMaria";
-        m_players.push_back(std::make_shared<AIPlayer>(playerName));
-        std::vector<Card> cards;
-        m_playedCards.push_back({m_players.back(), cards});
+        auto player = AIPlayersFactory(AIPlayer.difficulty, AIPlayer.name);
+        m_players.push_back(player);
+        m_playedCards.push_back({player, {}});
     }
+
+}
+
+void ServerGame::_updateViewCardsInfo()
+{
+    std::vector<PlayerHand> hands;
+    for(auto player : m_players)
+    {
+        PlayerHand hand;
+        hand.name = player->GetName();
+        hand.cards = player->playerDeck;
+        hands.push_back(hand);
+    }
+
+    Msg msg;
+    msg.name = "cards_info";
+    msg.AddValue("players_hands", hands);
+
+    _sendMsg(msg);
 }
 
 int ServerGame::_playersAlive() const
@@ -377,7 +414,7 @@ void ServerGame::_cardEffectCheck(const Card& c, Deck& deck ,PlayerPtr player,in
     bool present = false;
     std::string input;
 
-    // When it's priest try guess on of opponents card
+    // When it's priest try guess one of opponents card
     if( Utils::CardTypeToString(c.type) == "Guard")
     {
         if(_allProtected(player))

@@ -1,8 +1,8 @@
-#include "View.h"
 #include "mainwindow.h"
+#include "View.h"
 #include <QApplication>
 
-int main(int argc, char** argv)
+int main(int argc, char *argv[])
 {
     View view(argc, argv);
     if(view.Init({}) == false)
@@ -15,7 +15,6 @@ int main(int argc, char** argv)
     {
         view.Update();
     }
-
     return 0;
 }
 

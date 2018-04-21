@@ -13,8 +13,9 @@ void ViewPresentation::Init(MsgSender msgSender)
     m_mainWindow.SetMsgSender(msgSender);
 }
 
-void ViewPresentation::OnMsgReceived(const Msg& /*msg*/)
+void ViewPresentation::OnMsgReceived(const Msg& msg)
 {
+    m_mainWindow.OnMsgReceived(msg);
 }
 
 void ViewPresentation::Update()

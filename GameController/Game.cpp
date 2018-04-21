@@ -33,6 +33,10 @@ void ClientGame::OnMsgReceived(const Msg& msg)
     {
         _sendMsgToServer(msg);
     }
+    else if(msg.name == "cards_info")
+    {
+        _sendMsgToView(msg);
+    }
 }
 
 void ClientGame::RequestCredentials()

@@ -22,6 +22,16 @@ SOURCES += main.cpp                     \
         information.cpp                 \
         View.cpp                        \
         Presentation.cpp                \
+        utils.cpp                \
+		../../Network/IConnection.cpp   \
+		../../Network/Network.cpp       \
+		../../Network/TCPClientConnection.cpp \
+		../../Network/TCPServerConnection.cpp \
+		../../Msg/TypesTools.cpp \
+		../../Msg/Serializer.cpp \
+		../../Msg/GenericMsg.cpp \
+		../../Msg/Deserializer.cpp \
+                ../../GameCommon/TypesSerializers.cpp
 
 HEADERS  += mainwindow.h \
     computer.h           \
@@ -35,10 +45,10 @@ HEADERS  += mainwindow.h \
     Presentation.h       \
 
 FORMS    += mainwindow.ui \
-    computer.ui           \
-    online.ui             \
-    playernumber.ui       \
-    game.ui               \
+    computer.ui \
+    online.ui \
+    playernumber.ui \
+    game.ui \
     information.ui
 
 RESOURCES += \
@@ -46,16 +56,7 @@ RESOURCES += \
 
 DISTFILES +=
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../build/release/ -lNetwork
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../build/debug/ -lNetwork
-else:unix: LIBS += -L$$PWD/../../build/ -lNetwork
+TRANSLATIONS = l10n/translations_fr_FR.ts \
+			   l10n/translations_en_EN.ts
 
-INCLUDEPATH += $$PWD/../../build
-DEPENDPATH += $$PWD/../../build
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../build/release/ -lSerialize
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../build/debug/ -lSerialize
-else:unix: LIBS += -L$$PWD/../../build/ -lSerialize
-
-INCLUDEPATH += $$PWD/../../build
-DEPENDPATH += $$PWD/../../build
+CONFIG += c++11

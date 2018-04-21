@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'computer.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -200,14 +200,14 @@ public:
 
     void retranslateUi(QDialog *Computer)
     {
-        Computer->setWindowTitle(QApplication::translate("Computer", "Love Letter", Q_NULLPTR));
-        label_2->setText(QApplication::translate("Computer", "ENTER YOUR NAME", Q_NULLPTR));
-        easyButton->setText(QApplication::translate("Computer", "EASY", Q_NULLPTR));
-        mediumButton->setText(QApplication::translate("Computer", "MEDIUM", Q_NULLPTR));
-        hardButton->setText(QApplication::translate("Computer", "HARD", Q_NULLPTR));
-        label_3->setText(QApplication::translate("Computer", "NAME", Q_NULLPTR));
-        startButton->setText(QApplication::translate("Computer", "START", Q_NULLPTR));
-        label->setText(QApplication::translate("Computer", "SELECT MODE", Q_NULLPTR));
+        Computer->setWindowTitle(QApplication::translate("Computer", "Love Letter", 0));
+        label_2->setText(QApplication::translate("Computer", "ENTER YOUR NAME", 0));
+        easyButton->setText(QApplication::translate("Computer", "EASY", 0));
+        mediumButton->setText(QApplication::translate("Computer", "MEDIUM", 0));
+        hardButton->setText(QApplication::translate("Computer", "HARD", 0));
+        label_3->setText(QApplication::translate("Computer", "NAME", 0));
+        startButton->setText(QApplication::translate("Computer", "START", 0));
+        label->setText(QApplication::translate("Computer", "SELECT MODE", 0));
     } // retranslateUi
 
 };

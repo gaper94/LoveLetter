@@ -3,8 +3,7 @@
 
 Online::Online(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Online),
-    windowGame(new Game(this))
+    ui(new Ui::Online)
 {
     ui->setupUi(this);
 
@@ -24,7 +23,7 @@ Online::Online(QWidget *parent) :
 
     textArea = ui->lineEdit;
 
-    textArea->setPlaceholderText("Enter your name. Ex: Lilu...");
+    textArea->setPlaceholderText(tr("Enter your name. Ex: Lilu..."));
     textArea->setMaxLength(15); //nicknames <= 8 caracters
 
     startButton = ui->startButton;
@@ -36,7 +35,6 @@ Online::Online(QWidget *parent) :
 Online::~Online()
 {
     delete ui;
-    delete windowGame;
 }
 
 void Online::on_startButton_clicked()
@@ -44,12 +42,12 @@ void Online::on_startButton_clicked()
     name = textArea->text();
 
     hide();
+    windowGame = new Game(this);
     windowGame->show();
 }
 
 void Online::TextChanged(QString str)
 {
-    name = str;
-    startButton->setEnabled(!name.isEmpty());
+    startButton->setEnabled(!str.isEmpty());
 }
 

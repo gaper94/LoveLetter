@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -90,6 +90,7 @@ public:
         playButton->setIconSize(QSize(125, 75));
         playButton->setCheckable(false);
         playButton->setAutoDefault(false);
+        playButton->setDefault(false);
         playButton->setFlat(true);
 
         horizontalLayout_2->addWidget(playButton);
@@ -121,6 +122,7 @@ public:
         infoButton->setIcon(icon2);
         infoButton->setIconSize(QSize(75, 75));
         infoButton->setAutoDefault(false);
+        infoButton->setDefault(false);
         infoButton->setFlat(true);
         languageButton = new QPushButton(centralWidget);
         languageButton->setObjectName(QStringLiteral("languageButton"));
@@ -134,18 +136,14 @@ public:
 
         retranslateUi(MainWindow);
 
-        playButton->setDefault(false);
-        infoButton->setDefault(false);
-
-
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Love Letter", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Love Letter", 0));
 #ifndef QT_NO_TOOLTIP
-        MainWindow->setToolTip(QApplication::translate("MainWindow", "Love Letter", Q_NULLPTR));
+        MainWindow->setToolTip(QApplication::translate("MainWindow", "Love Letter", 0));
 #endif // QT_NO_TOOLTIP
         playButton->setText(QString());
         infoButton->setText(QString());

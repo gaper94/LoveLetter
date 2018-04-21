@@ -21,6 +21,7 @@ public:
     void OnControllerConnect();
     void OnControllerDisconnect();
     void SetMsgSender(MsgSender msgSender);
+    void OnMsgReceived(const Msg& msg);
 
 private slots:
     void on_playButton_clicked();

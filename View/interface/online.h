@@ -29,7 +29,6 @@ private:
     Game *windowGame;
     QPushButton *startButton;
     QLineEdit *textArea;
-    QString name;
 };
 
 #endif // ONLINE_H

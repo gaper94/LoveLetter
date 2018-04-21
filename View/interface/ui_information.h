@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'information.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -102,8 +102,8 @@ public:
 
     void retranslateUi(QDialog *Information)
     {
-        Information->setWindowTitle(QApplication::translate("Information", "Rules", Q_NULLPTR));
-        label->setText(QApplication::translate("Information", "RULES", Q_NULLPTR));
+        Information->setWindowTitle(QApplication::translate("Information", "Rules", 0));
+        label->setText(QApplication::translate("Information", "RULES", 0));
         label_2->setText(QApplication::translate("Information", "Love Letter is played in a series of rounds. Each round represents one day. At the end of each round, one player\342\200\231s letter reaches the Princess, and she reads it. When she reads enough letters from one suitor, she becomes enamored and grants that suitor permission to court her. That player wins the princess\342\200\231s heart and the game.\n"
 "\n"
 "TAKING A TURN\n"
@@ -114,7 +114,7 @@ public:
 "\n"
 ""
                         "END OF A ROUND\n"
-"A round ends if the deck is empty at the end of a turn. All players still in the round reveal their hands. The player with the highest ranked person wins the round. In case of a tie, the player who discarded the highest total value of cards wins.A round also ends if all players but one are out of the round, in which case the remaining player wins. ", Q_NULLPTR));
+"A round ends if the deck is empty at the end of a turn. All players still in the round reveal their hands. The player with the highest ranked person wins the round. In case of a tie, the player who discarded the highest total value of cards wins.A round also ends if all players but one are out of the round, in which case the remaining player wins. ", 0));
     } // retranslateUi
 
 };

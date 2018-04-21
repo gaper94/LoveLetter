@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'playernumber.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -192,14 +192,14 @@ public:
 
     void retranslateUi(QDialog *PlayerNumber)
     {
-        PlayerNumber->setWindowTitle(QApplication::translate("PlayerNumber", "Love Letter", Q_NULLPTR));
-        label->setText(QApplication::translate("PlayerNumber", "SELECT THE NUMBER OF PLAYERS ", Q_NULLPTR));
-        twoPlayersButton->setText(QApplication::translate("PlayerNumber", " 2 PLAYERS", Q_NULLPTR));
-        threePlayersButton->setText(QApplication::translate("PlayerNumber", "3 PLAYERS", Q_NULLPTR));
-        fourPlayersButton->setText(QApplication::translate("PlayerNumber", "4 PLAYERS", Q_NULLPTR));
-        label_2->setText(QApplication::translate("PlayerNumber", "SELECT MODE", Q_NULLPTR));
-        computerButton->setText(QApplication::translate("PlayerNumber", "COMPUTER ", Q_NULLPTR));
-        onlineButton->setText(QApplication::translate("PlayerNumber", "ONLINE", Q_NULLPTR));
+        PlayerNumber->setWindowTitle(QApplication::translate("PlayerNumber", "Love Letter", 0));
+        label->setText(QApplication::translate("PlayerNumber", "SELECT THE NUMBER OF PLAYERS ", 0));
+        twoPlayersButton->setText(QApplication::translate("PlayerNumber", " 2 PLAYERS", 0));
+        threePlayersButton->setText(QApplication::translate("PlayerNumber", "3 PLAYERS", 0));
+        fourPlayersButton->setText(QApplication::translate("PlayerNumber", "4 PLAYERS", 0));
+        label_2->setText(QApplication::translate("PlayerNumber", "SELECT MODE", 0));
+        computerButton->setText(QApplication::translate("PlayerNumber", "COMPUTER ", 0));
+        onlineButton->setText(QApplication::translate("PlayerNumber", "ONLINE", 0));
     } // retranslateUi
 
 };

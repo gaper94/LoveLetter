@@ -74,6 +74,7 @@ void View::Update()
 void View::_onControllerConnect(IConnection::ConnectionId id)
 {
     m_controllerConnectionId = id;
+    m_presentation.OnControllerConnected();
 }
 
 void View::_onControllerDisconnect(IConnection::ConnectionId)

@@ -1,5 +1,14 @@
 #include "computer.h"
 #include "ui_computer.h"
+#include "../../GameCommon/GameDefinitions.h"
+
+static constexpr unsigned char maxAIPlayers = 3;
+static std::string AIPlayersNames[maxAIPlayers] =
+{
+   "Jack",
+   "Alice",
+   "Tom"
+};
 
 Computer::Computer(QWidget *parent) :
     QDialog(parent),
@@ -35,7 +44,7 @@ Computer::Computer(QWidget *parent) :
 
     textArea = ui->lineEdit;
 
-    textArea->setPlaceholderText("Enter your name. Ex: Lilu...");
+    textArea->setPlaceholderText(tr("Enter your name. Ex: Lilu..."));
     textArea->setMaxLength(15); //nicknames <= 8 caracters
 
     startButton = ui->startButton;
@@ -51,6 +60,7 @@ Computer::Computer(QWidget *parent) :
 Computer::~Computer()
 {
     delete ui;
+    delete windowGame;
 }
 
 void Computer::OnControllerConnect()
@@ -66,6 +76,14 @@ void Computer::OnControllerDisconnect()
 void Computer::SetMsgSender(MsgSender msgSender)
 {
     m_msgSender = msgSender;
+}
+
+void Computer::OnMsgReceived(const Msg& msg)
+{
+    if(windowGame != nullptr)
+    {
+        windowGame->OnMsgReceived(msg);
+    }
 }
 
 void Computer::on_easyButton_toggled(bool checked)
@@ -86,6 +104,7 @@ void Computer::on_mediumButton_toggled(bool checked)
         ui->easyButton->setChecked(false);
         ui->hardButton->setChecked(false);
     }
+    else {}
 }
 
 void Computer::on_hardButton_toggled(bool checked)
@@ -122,15 +141,32 @@ void Computer::on_startButton_clicked()
 
 void Computer::TextChanged(QString str)
 {
-    name = str;
     startButton->setEnabled(!str.isEmpty());
 }
+
+
 
 void Computer::_sendMsg(const Msg& msg)
 {
     if(m_msgSender != nullptr)
     {
         m_msgSender(msg);
+    }
+}
+
+AIPlayerDifficulty AIPlayerDifficultyFromString(const std::string& difficulty)
+{
+    if(difficulty == "medium")
+    {
+        return AIPlayerDifficulty::Medium;
+    }
+    else if(difficulty == "hard")
+    {
+        return AIPlayerDifficulty::Hard;
+    }
+    else
+    {
+        return AIPlayerDifficulty::Easy;
     }
 }
 
@@ -144,7 +180,16 @@ void Computer::_sendInitMsg()
     std::string playerName = name.toStdString();
     msg.AddValue("player_name", playerName);
     std::string AIplayersMode = game_mode.toStdString();
-    msg.AddValue("ai_players_mode", AIplayersMode);
+    auto numberOfAiPlayers = numberOfPlayers - 1;
+    std::vector<AIPlayerCfg> AIPlayers;
+    for(int i = 0; i < numberOfAiPlayers; i++)
+    {
+        AIPlayerCfg player;
+        player.difficulty = AIPlayerDifficultyFromString(AIplayersMode);
+        player.name = AIPlayersNames[i % maxAIPlayers];
+        AIPlayers.push_back(player);
+    }
+    msg.AddValue("ai_players", AIPlayers);
 
     _sendMsg(msg);
 

@@ -5,10 +5,7 @@
 
 PlayerNumber::PlayerNumber(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PlayerNumber),
-    windowComputer(new Computer(this)),
-    windowOnline(new Online(this))
-
+    ui(new Ui::PlayerNumber)
 {
     ui->setupUi(this);
 
@@ -34,16 +31,15 @@ PlayerNumber::PlayerNumber(QWidget *parent) :
 
     ui->computerButton->setEnabled(false);
     ui->onlineButton->setEnabled(false);
+
+    windowComputer = new Computer(this);
+    windowOnline = new Online(this);
 }
 
 PlayerNumber::~PlayerNumber()
 {
     delete ui;
-    delete windowComputer;
-    delete windowOnline;
 }
-
-int nb_players;
 
 void PlayerNumber::OnControllerConnect()
 {
@@ -72,6 +68,16 @@ void PlayerNumber::SetMsgSender(MsgSender msgSender)
     }
 }
 
+void PlayerNumber::OnMsgReceived(const Msg &msg)
+{
+    if(windowComputer != nullptr)
+    {
+        windowComputer->OnMsgReceived(msg);
+    }
+}
+
+int nb_players;
+
 //2 Players
 void PlayerNumber::on_twoPlayersButton_toggled(bool checked)
 {
@@ -84,6 +90,7 @@ void PlayerNumber::on_twoPlayersButton_toggled(bool checked)
         ui->computerButton->setEnabled(true);
         ui->onlineButton->setEnabled(true);
     }
+    else {}
 }
 
 //3 Players
@@ -98,6 +105,7 @@ void PlayerNumber::on_threePlayersButton_toggled(bool checked)
         ui->computerButton->setEnabled(true);
         ui->onlineButton->setEnabled(true);
     }
+    else {}
 }
 
 //4 players
@@ -112,6 +120,7 @@ void PlayerNumber::on_fourPlayersButton_toggled(bool checked)
         ui->computerButton->setEnabled(true);
         ui->onlineButton->setEnabled(true);
     }
+    else {}
 }
 
 void PlayerNumber::on_computerButton_clicked()
@@ -119,12 +128,10 @@ void PlayerNumber::on_computerButton_clicked()
     if ((ui->twoPlayersButton->isChecked()==true) || (ui->threePlayersButton->isChecked()==true) ||
             (ui->fourPlayersButton->isCheckable()==true))
     {
-        if(m_controllerConnected == true)
-        {
-            hide();
-            windowComputer->show();
-        }
+        hide();
+        windowComputer->show();
     }
+    else {}
 }
 
 void PlayerNumber::on_onlineButton_clicked()
@@ -135,6 +142,7 @@ void PlayerNumber::on_onlineButton_clicked()
         hide();
         windowOnline->show();
     }
+    else {}
 }
 
 

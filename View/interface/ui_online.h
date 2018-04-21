@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'online.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.1
+** Created by: Qt User Interface Compiler version 5.2.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -118,10 +118,10 @@ public:
 
     void retranslateUi(QDialog *Online)
     {
-        Online->setWindowTitle(QApplication::translate("Online", "Love Letter", Q_NULLPTR));
-        label_2->setText(QApplication::translate("Online", "NAME", Q_NULLPTR));
-        startButton->setText(QApplication::translate("Online", "START", Q_NULLPTR));
-        label->setText(QApplication::translate("Online", "ENTER YOUR NAME", Q_NULLPTR));
+        Online->setWindowTitle(QApplication::translate("Online", "Love Letter", 0));
+        label_2->setText(QApplication::translate("Online", "NAME", 0));
+        startButton->setText(QApplication::translate("Online", "START", 0));
+        label->setText(QApplication::translate("Online", "ENTER YOUR NAME", 0));
     } // retranslateUi
 
 };
